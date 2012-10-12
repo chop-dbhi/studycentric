@@ -37,7 +37,9 @@ To view a study, navigate to the url where StudyCentric is installed and pass it
 
 ## Screenshot
 
-
+<center>
+<img src="https://raw.github.com/cbmi/studycentric/master/StudyCentric.png"/>
+</center>
 
 Displaying the KNIX study from http://www.osirix-viewer.com/datasets/
 
