@@ -57,7 +57,7 @@ StudyCentric currently only supports single frame DICOM files. There is not mult
 # Installation
 
 ## Installing a PACS
-This is a bit beyond the scope of this README but you will need to store your images in a DICOM compatible [PACS](http://en.wikipedia.org/wiki/Picture_archiving_and_communication_system) that supports [WADO](http://medical.nema.org/dicom/2004/04_18PU.PDF).  All of our internal instances use the open source (DCM4CHEE)[http://www.dcm4che.org/confluence/display/ee2/Home] PACS.
+This is a bit beyond the scope of this README but you will need to store your images in a DICOM compatible [PACS](http://en.wikipedia.org/wiki/Picture_archiving_and_communication_system) that supports [WADO](http://medical.nema.org/dicom/2004/04_18PU.PDF).  All of our internal instances use the open source [DCM4CHEE](http://www.dcm4che.org/confluence/display/ee2/Home) PACS.
 
 Both the Server and the Client will need to communicate with the PACS system. The server executes all communication that requires speaking the standard DICOM protocol or manipulating binary files, but the client executes WADO requests (HTTP requests) for images directly. There are three basic ways you can choose to make the PACS WADO port (by default on DCM4CHEE it is 8080):
 
@@ -115,10 +115,11 @@ This file must be configured properly to match your PACS server and StudyCentric
 * WADOPath: The url path to your WADO server
 * WADOPort: The port of the wado service (by default on DCM4CHEE this is 8080)
 
-The last four options affect the appearance of the client:
+The last five options affect the appearance of the client:
 * InstanceThumbNailSizePx: This controls the size of the image thumbnails that appear in the right-hand side series preview drawer.
 * SeriesThumbNailSizePx: This controls the thumbnail size for the Series thumbnails displayed on the left-hand side of the screen.
 * DefaultImgSize: This controls the default image size of the displayed image in the center of the screen.
 * ImagesPerRow: This controls the number of images displayed per row in the right-hand side series preview drawer.
+* DisableClinicalWarning: This controls whether StudyCentric will prompt the user to agree that it is not to be used for clinical or diagnostic purposes. The default is false, so the user will be prompted each time they use the application. It is recommended that this default be used.
 
 
