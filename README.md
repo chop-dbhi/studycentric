@@ -101,7 +101,8 @@ define({
     InstanceThumbNailSizePx:100,
     SeriesThumbNailSizePx:150,
     DefaultImgSize:128,
-    ImagesPerRow:3
+    ImagesPerRow:3,
+    DisableClinicalWarning:false
 });
 ```
 This file must be configured properly to match your PACS server and StudyCentric Server configuration. Descriptions of each option are outlined below:
