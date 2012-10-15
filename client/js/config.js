@@ -1,0 +1,16 @@
+// Configuration Options for StudyCentric
+define({
+    StudyCentricProt:"http",
+    StudyCentricHost:"localhost",
+    StudyCentricPath:"",
+    StudyCentricPort:80,
+    WADOHost:"localhost",
+    WADOPort:8080,
+    WADOProt:"http",
+    WADOPath:"wado",
+    InstanceThumbNailSizePx:100,
+    SeriesThumbNailSizePx:150,
+    DefaultImgSize:128,
+    ImagePerRow:3,
+    DisableClinicalWarning:false
+});
