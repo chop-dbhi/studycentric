@@ -45,7 +45,7 @@ define(["jquery","underscore", "config"], function($, _, Config){
            var that = this;
            timeout = setTimeout(function() {
               var o = that.queryString2Object(imgSource);
-              var url = (Config.StudyBreakHost ? ((Config.StudyBreakProt || "https") +  "://" + Config.StudyBreakHost + (Config.StudyBreakPort ? ":" + Config.StudyBreakPort:"") +"/") : "" ) + Config.StudyBreakPath +"object/"+o.objectUID+"?&seriesUID="+o.seriesUID+"&studyUID="+o.studyUID+"&callback=?";
+              var url = (Config.StudyCentricHost ? ((Config.StudyCentricProt || "https") +  "://" + Config.StudyCentricHost + (Config.StudyCentricPort ? ":" + Config.StudyCentricPort:"") +"/") : "" ) + Config.StudyCentricPath +"object/"+o.objectUID+"?&seriesUID="+o.seriesUID+"&studyUID="+o.studyUID+"&callback=?";
               req = $.getJSON(url, $.proxy(that.processDicomAttributes, that) ); 
            }, 500);
        }
