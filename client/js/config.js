@@ -11,6 +11,6 @@ define({
     InstanceThumbNailSizePx:100,
     SeriesThumbNailSizePx:150,
     DefaultImgSize:128,
-    ImagePerRow:3,
+    ImagesPerRow:3,
     DisableClinicalWarning:false
 });
