@@ -115,7 +115,7 @@ transferSyntax="+DICOM.const_get("EXPLICIT_BIG_ENDIAN")
     #dcm_obj = DICOM::DObject.parse(res.body)
     logger.info DICOM.const_get("EXPLICIT_BIG_ENDIAN")
 
-    dcm_obj = DICOM::DObject.new(res.body, :bin=> true)
+    dcm_obj = DICOM::DObject.parse(res.body)
     
     # Unfortunately figuring out which pixel spacing attribute should
     # be used for measurements is unnecessarily complex

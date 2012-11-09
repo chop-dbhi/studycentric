@@ -332,9 +332,9 @@ require(['jquery',
                   buttons: {
                       "I agree": function() {
                           $(this).dialog( "close" );
-                      },
+                      }
                   }
-              }); 
+              });
             }else{
                 alert("StudyCentric is not a certified Medical Device and is not to be used for any clinical or diagnostic purposes. It is for research only.");
             }

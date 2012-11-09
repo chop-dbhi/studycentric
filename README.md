@@ -70,9 +70,14 @@ Both the Server and the Client will need to communicate with the PACS system. Th
 
 The StudyCentric server is a very simple Sinatra Ruby app. It can be installed a number of ways. Our internal instances serve the application from [Apache using the Passenger Phusion module](http://www.pastbedti.me/2009/11/deploying-a-sinatra-app-with-apache-and-phusion-passenger-a-k-a-mod_rack/), but there are other [options](http://www.kalzumeus.com/2010/01/15/deploying-sinatra-on-ubuntu-in-which-i-employ-a-secretary/). Sinatra is fully compatible with [Rack](http://en.wikipedia.org/wiki/Rack_(web_server_interface\)) so any web server capable of deploying a Rack application will work.
 
+### Server Ruby gem requirements
+1. ruby-dicom
+1. sinatra
+1. sinatra-contrib
+
+### Server Configuration
+
 You need to configure the server so it knows the location of your DICOM PACS. In the server directory there is a config.yml file that needs to be configured. It requires that you fill in the following configuration options:
-
-
 
 * dicom\_server\_host: the hostname of your DICOM server (PACS)
 * ae: the [Application Entity](http://www.dabsoft.ch/dicom/8/C.1/) of your DICOM Server
