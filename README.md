@@ -49,7 +49,8 @@ StudyCentric currently only supports single frame DICOM files. There is not mult
 * X-ray
 
 ### Known Issues
-StudyCentric is currently not working in IE 8 (untested in IE 9) due to inclusion of a BigDecimal library that is not working in IE. We are currently working on a fix.
+1. StudyCentric is currently not working in IE 8 (untested in IE 9) due to inclusion of a BigDecimal library that is not working in IE. We are currently working on a fix.
+1. We have seen issues with the ruby server being exceptionally slow on CentOS when using Ruby 1.9.2 and ruby-dicom 0.9.4. Downgrading to Ruby 1.8.7 and ruby-dicom 0.9.1 seems to remedy this, but requires a small change to the server code. Please use the code branch called ruby1.8.7 if using ruby-dicom 0.9.1 on Ruby 1.8.7.
 
 ## Requirements
 
@@ -70,9 +71,10 @@ Both the Server and the Client will need to communicate with the PACS system. Th
 
 ## Installing the server
 
-The StudyCentric server is a very simple Sinatra Ruby app. It can be installed a number of ways. Our internal instances serve the application from [Apache using the Passenger Phusion module](http://www.pastbedti.me/2009/11/deploying-a-sinatra-app-with-apache-and-phusion-passenger-a-k-a-mod_rack/), but there are other [options](http://www.kalzumeus.com/2010/01/15/deploying-sinatra-on-ubuntu-in-which-i-employ-a-secretary/). Sinatra is fully compatible with [Rack](http://en.wikipedia.org/wiki/Rack_(web_server_interface\)) so any web server capable of deploying a Rack application will work. It has been tested with Ruby 1.9.2.
+The StudyCentric server is a very simple Sinatra Ruby app. It can be installed a number of ways. Our internal instances serve the application from [Apache using the Passenger Phusion module](http://www.pastbedti.me/2009/11/deploying-a-sinatra-app-with-apache-and-phusion-passenger-a-k-a-mod_rack/), but there are other [options](http://www.kalzumeus.com/2010/01/15/deploying-sinatra-on-ubuntu-in-which-i-employ-a-secretary/). Sinatra is fully compatible with [Rack](http://en.wikipedia.org/wiki/Rack_(web_server_interface\)) so any web server capable of deploying a Rack application will work.
 
 ### Server Ruby gem requirements
+1. ruby 1.9.2
 1. ruby-dicom (version 0.9.4)
 1. sinatra
 1. sinatra-contrib
