@@ -11,6 +11,7 @@ require(['jquery',
          'utils',
          'lightbox',
          'underscore',
+         'reportaconcern',
          'libs/jquery.mousewheel',
          'libs/jquery-ui-min',
          'libs/jquery.nanoscroller.min'], function($, Models, Config, Utils, LightBox, _) {
