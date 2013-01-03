@@ -163,8 +163,8 @@ transferSyntax="+DICOM.const_get("EXPLICIT_BIG_ENDIAN")
     end
 
     # Build up the response
-    response[:windowCenter] = dcm_obj[WINDOW_CENTER].value.split("\\")[0].to_i if !dcm_obj[WINDOW_CENTER].nil?
-    response[:windowWidth] = dcm_obj[WINDOW_LEVEL].value.split("\\")[0].to_i if !dcm_obj[WINDOW_LEVEL].nil?
+    response[:windowCenter] = dcm_obj[WINDOW_CENTER].value.split("\\")[0].to_i if !dcm_obj[WINDOW_CENTER].nil? and !dcm_obj[WINDOW_CENTER].value.nil?
+    response[:windowWidth] = dcm_obj[WINDOW_LEVEL].value.split("\\")[0].to_i if !dcm_obj[WINDOW_LEVEL].nil? and !dcm_obj[WINDOW_LEVEL].value.nil?
 
     # Pixel spacing attributes can contain two values packed like this:
     # x//y
