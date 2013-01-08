@@ -1,4 +1,8 @@
 define(["jquery","underscore","utils","config","libs/jquery-ui-min"], function($, _, Utils, Config) {
+    if (!Config.EnableReportConcern){
+       return;
+    }
+
     function loadCss(url) {
         var link = document.createElement("link");
         link.type = "text/css";

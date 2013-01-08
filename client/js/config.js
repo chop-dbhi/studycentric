@@ -13,6 +13,7 @@ define({
     DefaultImgSize:128,
     ImagesPerRow:3,
     DisableClinicalWarning:false,
+    EnableReportConcern:false,
     ReportConcernUrl:"../concerns/",
     ReportConcernEmail:"Enter Email"
 });

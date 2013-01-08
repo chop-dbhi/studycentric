@@ -111,7 +111,10 @@ define({
     SeriesThumbNailSizePx:150,
     DefaultImgSize:128,
     ImagesPerRow:3,
-    DisableClinicalWarning:false
+    DisableClinicalWarning:false,
+    EnableReportConcern:false,
+    ReportConcernUrl:"../concerns/",
+    ReportConcernEmail:"Enter Email"
 });
 ```
 This file must be configured properly to match your PACS server and StudyCentric Server configuration. Descriptions of each option are outlined below:
@@ -125,11 +128,23 @@ This file must be configured properly to match your PACS server and StudyCentric
 * WADOPath: The url path to your WADO server
 * WADOPort: The port of the wado service (by default on DCM4CHEE this is 8080)
 
-The last five options affect the appearance of the client:
+The next five options affect the appearance of the client:
 * InstanceThumbNailSizePx: This controls the size of the image thumbnails that appear in the right-hand side series preview drawer.
 * SeriesThumbNailSizePx: This controls the thumbnail size for the Series thumbnails displayed on the left-hand side of the screen.
 * DefaultImgSize: This controls the default image size of the displayed image in the center of the screen.
 * ImagesPerRow: This controls the number of images displayed per row in the right-hand side series preview drawer.
 * DisableClinicalWarning: This controls whether StudyCentric will prompt the user to agree that it is not to be used for clinical or diagnostic purposes. The default is false, so the user will be prompted each time they use the application. It is recommended that this default be used.
+
+### Report a Concern Feature
+The last three options affect an optional "Report a Concern Feature". This is meant to help screen studies for potential Protected Health Information. If enabled, this places a button at the top of the screen labeled "Report a Concern". If the user clicks the button while viewing a study it will POST a JSON object to the configured URL to inform you that something in the study requires attention. *Please note that the HTTP service receiving this POST is not part of StudyCentric, you would need to provide it.* The feature is intended for use when StudyCentric is part of a larger PHI screening application. The ReportConcernEmail is displayed to the user in a message asking them to e-mail the study information only if the POST fails.
+
+The JSON object sent is as follows:
+
+```javascript
+{
+  document: <HTML document containing a link to the study and the image the user was viewing>,
+  comment: <Comment entered by the user when they clicked the report button>	
+}
+```
 
 
