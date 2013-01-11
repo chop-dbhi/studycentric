@@ -312,10 +312,12 @@ require(['jquery',
 
 
         var config = Utils.queryString2Object(window.location.search);
-        window.study = new Models.Study({uid:config.uid || 
-                                             config.study_uid || 
-                                             config.studyuid ||
-                                             config.studyUID});
+        var model_attr =  { uid:config.uid || 
+                           config.study_uid || 
+                           config.studyuid ||
+                           config.studyUID };
+
+        window.study = new Models.Study(model_attr);
         if (config.instances) $("#handle").click();
         lightBox = $("#lightbox");
         lightBox.mousewheel(animateSeries);
