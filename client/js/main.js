@@ -316,6 +316,28 @@ require(['jquery',
                            config.study_uid || 
                            config.studyuid ||
                            config.studyUID };
+    
+        if (!model_attr.uid){
+            // User did not specify a specify study to view, enable rapid view mode
+              $("#dialog-rapidview").dialog({
+                  resizable: true,
+                  draggable: true,
+                  height:350,
+                  width:450,
+                  modal: true,
+                  closeOnEscape: false,
+                  buttons: {
+                      "OK": function() {
+                          $(this).dialog( "close" );
+                          console.log($("textarea", this).text());
+                      },
+                      "Cancel": function() {
+
+                      }
+                  }
+              });
+        }
+        
 
         window.study = new Models.Study(model_attr);
         if (config.instances) $("#handle").click();
@@ -331,6 +353,7 @@ require(['jquery',
                   height:200,
                   width:350,
                   modal: true,
+                  stackable:true,
                   closeOnEscape: false,
                   buttons: {
                       "I agree": function() {
