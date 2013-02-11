@@ -93,7 +93,7 @@ You will also need to configure the client (see below) so it knows where you hav
 
 ### Sample mod_rack and apache configuration
 
-Most of the sample configurations available on the web show the Rack application mounted the DocumentRoot in the Apache config, but the configuration below just mounts the server at an arbitrary uri endpoint on your server. This is likely to be what you want since this is just a simple API endpoint that the client accesses and not something like a full Rails application.
+Most of the sample configurations available on the web show the Rack application mounted at the DocumentRoot in the Apache config, but the configuration below just mounts the server at an arbitrary uri endpoint on your server. This is likely to be what you want since this is just a simple API endpoint that the client accesses and not something like a full Rails application.
 
 This configuration is how we have the server installed in development on a [Vagrant](http://www.vagrantup.com/) box with [RVM](https://rvm.io/) installed. The api endpoint is `/server`. The git repository has been cloned into /vagrant/studycentric. The client will be accessible at `/client`.
 
