@@ -71,7 +71,7 @@ Both the Server and the Client will need to communicate with the PACS system. Th
 
 ## Installing the server
 
-The StudyCentric server is a very simple Sinatra Ruby app. It can be installed a number of ways. Our internal instances serve the application from [Apache using the Passenger Phusion module](http://www.pastbedti.me/2009/11/deploying-a-sinatra-app-with-apache-and-phusion-passenger-a-k-a-mod_rack/), but there are other [options](http://www.kalzumeus.com/2010/01/15/deploying-sinatra-on-ubuntu-in-which-i-employ-a-secretary/). Sinatra is fully compatible with [Rack](http://en.wikipedia.org/wiki/Rack_(web_server_interface\)) so any web server capable of deploying a Rack application will work.
+The StudyCentric server is a very simple Sinatra Ruby app. It can be installed a number of ways. Our internal instances serve the application from [Apache using the Passenger Phusion module](http://www.pastbedti.me/2009/11/deploying-a-sinatra-app-with-apache-and-phusion-passenger-a-k-a-mod_rack/), but there are other [options](http://www.kalzumeus.com/2010/01/15/deploying-sinatra-on-ubuntu-in-which-i-employ-a-secretary/). Sinatra is fully compatible with [Rack](http://en.wikipedia.org/wiki/Rack_(web_server_interface\)) so any web server capable of deploying a Rack application will work.  See the bottom of this section for a very simple apache configuration.
 
 ### Server Ruby gem requirements
 1. ruby 1.9.2
@@ -90,6 +90,32 @@ You need to configure the server so it knows the location of your DICOM PACS. In
 * wado\_server\_port: the port your WADO service is running on (defaults to 8080 on DCM4CHEE)
 
 You will also need to configure the client (see below) so it knows where you have installed the StudyCentric server.
+
+### Sample mod_rack and apache configuration
+
+Most of the sample configurations available on the web show the Rack application mounted the DocumentRoot in the Apache config, but the configuration below just mounts the server at an arbitrary uri endpoint on your server. This is likely to be what you want since this is just a simple API endpoint that the client accesses and not something like a full Rails application.
+
+This configuration is how we have the server installed in development on a [Vagrant](http://www.vagrantup.com/) box with [RVM](https://rvm.io/) installed. The api endpoint is `/server`. The git repository has been cloned into /vagrant/studycentric. The client will be accessible at `/client`.
+
+    LoadModule passenger_module /home/vagrant/.rvm/gems/ruby-1.9.2-p320/gems/passenger-3.0.19/ext/apache2/mod_passenger.so
+    PassengerRoot /home/vagrant/.rvm/gems/ruby-1.9.2-p320/gems/passenger-3.0.19
+    PassengerRuby /home/vagrant/.rvm/wrappers/ruby-1.9.2-p320/ruby
+
+    <VirtualHost *:80>
+          DocumentRoot /vagrant/studycentric
+
+          <LocationMatch ^/server>
+              PassengerAppRoot /vagrant/studycentric/server
+              RackBaseURI /server
+          </LocationMatch>
+
+          <Directory /vagrant/studycentric/server>
+             # This relaxes Apache security settings.
+             AllowOverride all
+             # MultiViews must be turned off.
+             Options -MultiViews
+          </Directory>
+    </VirtualHost>
 
 ## Installing the client
 The StudyCentric client is written entirely in JavaScript and HTML. It can be installed  by serving the client directory from your preferred web server.
