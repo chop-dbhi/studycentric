@@ -1,0 +1,29 @@
+.DS_Store
+
+*.py[co]
+*.sw[po]
+dist
+sdist
+build
+pip-log.txt
+MANIFEST
+
+.watch-pid
+.sass-cache
+
+# ignore local settings file intended for environment-specific settings
+local_settings.py
+
+# ignore optimized javascripts
+src/static/scripts/javascript/min
+
+# all Sass files will be compiled into this directory
+src/static/stylesheets/css/*.css
+src/static/stylesheets/css/page/*.css
+
+# Collected static files via Django's staticfiles app
+_site/static
+
+# Do not version user uploaded content since these files might be huge.
+# Have another strategy for backing up this content.
+_site/media
