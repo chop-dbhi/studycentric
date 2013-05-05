@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.http import HttpResponse
+import requests
 import gdcm
 import json
 
@@ -36,7 +37,7 @@ def study(request, study_iuid):
     ret = gdcm.DataSetArrayType()
     # Execute the C-FIND query
     cnf.CFind(settings.SC_DICOM_SERVER, settings.SC_DICOM_PORT,
-            theQuery, ret, 'GDCM_PYTHON', 'DCM4CHEE')
+            theQuery, ret, 'GDCM_PYTHON', settings.AET)
 
     response["description"] = str(ret[0].GetDataElement(study_descr_tag).GetValue())
     
@@ -57,7 +58,7 @@ def study(request, study_iuid):
     series_query = cnf.ConstructQuery(gdcm.eStudyRootType, gdcm.eSeries, ds)
     ret = gdcm.DataSetArrayType()
     cnf.CFind(settings.SC_DICOM_SERVER, settings.SC_DICOM_PORT, series_query,
-            ret, 'GDCM_PYTHON', 'DCM4CHEE')
+            ret, 'GDCM_PYTHON', settings.AET)
 
     sorted_ret = sorted(ret, key = lambda x: int(str(x.GetDataElement(series_number_tag).GetValue())))
 
@@ -93,7 +94,7 @@ def series(request, series_iuid):
     instance_query = cnf.ConstructQuery(gdcm.eStudyRootType, gdcm.eImage, ds)
     ret = gdcm.DataSetArrayType()
     cnf.CFind(settings.SC_DICOM_SERVER, settings.SC_DICOM_PORT, instance_query,
-            ret, 'GDCM_PYTHON', 'DCM4CHEE')
+            ret, 'GDCM_PYTHON', settings.AET)
 
     sorted_ret = sorted(ret, key = lambda x: int(str(x.GetDataElement(instance_number_tag).GetValue())))
     response = [str(x.GetDataElement(instance_uid_tag).GetValue()) for x in sorted_ret]
@@ -109,5 +110,12 @@ def series(request, series_iuid):
 
 
 def instance(request):
-    pass
+    wado_url = "http://%s:%s/wado?requestType=WADO" % (settings.SC_WADO_SERVER, settings.SC_WADO_PORT)
+    "+DICOM.const_get("EXPLICIT_BIG_ENDIAN")  
+    payload = {'contentType': 'application/dicom', 
+               'seriesUID': 'value2',
+               'studyUID' :'value3',
+               'objectUID': 'value4',
+               'transferSyntax':'value5'}
+    r = requests.get(wado_url, params=payload)
 
