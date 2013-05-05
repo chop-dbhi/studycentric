@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.http import HttpResponse
 import gdcm
 import json
 
@@ -19,12 +20,11 @@ def calibration_details(dcm_obj):
 
 def study(request, study_iuid):
     # Patient Name
-    print study_iuid
+    response = {}
     study_iuid_tag = gdcm.Tag(0x20,0xD)
     study_iuid_element = gdcm.DataElement(study_iuid_tag)
     study_descr_tag = gdcm.Tag(0x8,0x1030)
     study_descr_element = gdcm.DataElement(study_descr_tag)
-    study_descr_element.SetByteValue('', gdcm.VL(0))
     study_iuid_element.SetByteValue(str(study_iuid), gdcm.VL(len(study_iuid)))
     ds = gdcm.DataSet()
     ds.Insert(study_iuid_element)
@@ -38,35 +38,75 @@ def study(request, study_iuid):
     cnf.CFind(settings.SC_DICOM_SERVER, settings.SC_DICOM_PORT,
             theQuery, ret, 'GDCM_PYTHON', 'DCM4CHEE')
 
-    for i in range(0,ret.size()):
-       print "Patient #",i
-       print ret[i]
-    # Find all series in this study
+    response["description"] = str(ret[0].GetDataElement(study_descr_tag).GetValue())
+    
     ds = gdcm.DataSet()
     
     series_descr_tag = gdcm.Tag(0x8,0x103E)
     series_descr_element = gdcm.DataElement(series_descr_tag)
+    series_iuid_tag = gdcm.Tag(0x20,0xE)
+    series_iuid_element =  gdcm.DataElement(series_iuid_tag)
+    series_number_tag = gdcm.Tag(0x20,0x11)
+    series_number_element = gdcm.DataElement(series_number_tag)
     
     ds.Insert(study_iuid_element)
     ds.Insert(series_descr_element)
+    ds.Insert(series_iuid_element)
+    ds.Insert(series_number_element)
 
     series_query = cnf.ConstructQuery(gdcm.eStudyRootType, gdcm.eSeries, ds)
     ret = gdcm.DataSetArrayType()
     cnf.CFind(settings.SC_DICOM_SERVER, settings.SC_DICOM_PORT, series_query,
             ret, 'GDCM_PYTHON', 'DCM4CHEE')
 
-    for i in range(0,ret.size()):
-       print "Patient #",i
-       print ret[i]
+    sorted_ret = sorted(ret, key = lambda x: int(str(x.GetDataElement(series_number_tag).GetValue())))
 
+    response["series"] =  [{"description":str(x.GetDataElement(series_descr_tag).GetValue()),
+        "uid": str(x.GetDataElement(series_iuid_tag).GetValue())} for x in sorted_ret]
+
+    
+    json_response = json.dumps(response)
+    
     if request.GET.has_key('callback'):
-        return "HI"# return JSONP response
-    else:
-        return "HI" 
+        json_response =  "(function(){%s(%s);})();" % (request.GET['callback'], json_response) 
+    
+    return HttpResponse(json_response, content_type="application/json")
+    
+
+def series(request, series_iuid):
+
+    series_iuid_tag = gdcm.Tag(0x20,0xE)
+    series_iuid_element =  gdcm.DataElement(series_iuid_tag)
+    series_iuid_element.SetByteValue(str(series_iuid), gdcm.VL(len(series_iuid)))
+    instance_uid_tag = gdcm.Tag(0x8, 0x18)
+    instance_uid_element = gdcm.DataElement(instance_uid_tag)
+    instance_number_tag = gdcm.Tag(0x20,0x13)
+    instance_number_element = gdcm.DataElement(instance_number_tag)
+
+    ds = gdcm.DataSet()
+    ds.Insert(series_iuid_element)
+    ds.Insert(instance_uid_element)
+    ds.Insert(instance_number_element)
+
+    cnf = gdcm.CompositeNetworkFunctions()
+
+    instance_query = cnf.ConstructQuery(gdcm.eStudyRootType, gdcm.eImage, ds)
+    ret = gdcm.DataSetArrayType()
+    cnf.CFind(settings.SC_DICOM_SERVER, settings.SC_DICOM_PORT, instance_query,
+            ret, 'GDCM_PYTHON', 'DCM4CHEE')
+
+    sorted_ret = sorted(ret, key = lambda x: int(str(x.GetDataElement(instance_number_tag).GetValue())))
+    response = [str(x.GetDataElement(instance_uid_tag).GetValue()) for x in sorted_ret]
+
+    json_response = json.dumps(response)
+    
+    if request.GET.has_key('callback'):
+        json_response =  "(function(){%s(%s);})();" % (request.GET['callback'], json_response) 
+    
+    return HttpResponse(json_response, content_type="application/json")
 
 
-def series(request):
-    pass
+
 
 def instance(request):
     pass
