@@ -24,6 +24,9 @@ INSTALLED_APPS = (os.path.split(os.path.split(__file__)[0])[1],)
 SC_DICOM_SERVER = 'localhost'
 SC_DICOM_PORT = 11112
 
+SC_WADO_SERVER = 'localhost'
+SC_WADO_PORT = 8080
+
 #def view (request):
 #   return HttpResponse(len(request.GET.getlist("a")))
 #

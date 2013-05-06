@@ -1,8 +1,10 @@
 from django.conf import settings
 from django.http import HttpResponse
+import cStringIO
 import requests
 import gdcm
 import json
+import dicom
 
 # Some DICOM SOP class constants
 CT = "1.2.840.10008.5.1.4.1.1.2"
@@ -14,7 +16,13 @@ STUDY_IUID = (0x20,0xD)
 STUDY_DESCR = (0x8,0x1030)
 SERIES_IUID = (0x20,0xE)
 SERIES_DESCR = (0x8, 0x103E)
-
+SOP_CLASS_UID = (0x8,0x16)
+PIXEL_SPACING = (0x28,0x30)
+IMAGER_PIXEL_SPACING = (0x18,0x1164)
+WINDOW_CENTER = (0x28,0x1050)
+WINDOW_LEVEL =  (0x28, 0x1051)
+CALIBRATION_TYPE =  (0x28,0x402)
+CALIBRATION_DESCR = (0x28,0x404)
 
 def calibration_details(dcm_obj):
     pass
@@ -107,15 +115,88 @@ def series(request, series_iuid):
     return HttpResponse(json_response, content_type="application/json")
 
 
-
-
-def instance(request):
-    wado_url = "http://%s:%s/wado?requestType=WADO" % (settings.SC_WADO_SERVER, settings.SC_WADO_PORT)
-    "+DICOM.const_get("EXPLICIT_BIG_ENDIAN")  
+def instance(request, instance_uid):
+    wado_url = "http://%s:%d/wado" % (settings.SC_WADO_SERVER, settings.SC_WADO_PORT)
+    
     payload = {'contentType': 'application/dicom', 
-               'seriesUID': 'value2',
-               'studyUID' :'value3',
-               'objectUID': 'value4',
-               'transferSyntax':'value5'}
+               'seriesUID':'',
+               'studyUID' :'',
+               'objectUID': instance_uid,
+               'requestType':'WADO',
+               'transferSyntax':'1.2.840.10008.1.2.2'} # explicit big endian
+    # explicit little endian is  '1.2.840.10008.1.2.1'
     r = requests.get(wado_url, params=payload)
+    data = r.content
+    file_like = cStringIO.StringIO(data)
+    dcm_obj = dicom.read_file(file_like)
+    file_like.close()
+
+    modality_type = None
+    modality_type = dcm_obj[SOP_CLASS_UID].value if dcm_obj.has_key(SOP_CLASS_UID) else None
+    spacing = None
+    xSpacing = None
+    ySpacing = None
+    pixel_attr = None
+    pixel_message = None
+    response = {}
+    if modality_type in [MR, CT]:
+        spacing = dcm_obj[PIXEL_SPACING].value if dcm_obj.has_key(PIXEL_SPACING) else None
+        pixel_attr = PIXEL_SPACING
+    elif modality_type in [CR, XA]:
+        # The following logic is taken from CP 586
+        pixel_spacing = dcm_obj[PIXEL_SPACING].value if dcm_obj.has_key(PIXEL_SPACING) else None
+        imager_spacing = dcm_obj[IMAGER_PIXEL_SPACING].value if dcm_obj.has_key(IMAGER_PIXEL_SPACING) else None
+        if pixel_spacing:
+            if imager_spacing:
+                if pixel_spacing == imager_spacing:
+                    # Both attributes are present 
+                    spacing = imager_spacing
+                    pixel_attr = IMAGER_PIXEL_SPACING
+                    pixel_message = "Measurements are at the detector plane."
+                else:
+                    # Using Pixel Spacing
+                    spacing = pixel_spacing
+                    pixel_attr = PIXEL_SPACING
+                    pixel_message = "Measurement has been calibrated, details = %s " % \
+                        calibrationDetails(dcm_obj)
+            else:
+               # Only Pixel Spacing was specified
+               spacing = pixel_spacing
+               pixel_attr = PIXEL_SPACING
+               pixel_message = "Warning measurement may have been calibrated, details: %s. It is not clear" + \
+                  " what this measurement represents." % calibrationDetails(dcm_obj)
+        elif imager_spacing:
+            spacing = imager_spacing
+            pixel_attr = IMAGER_PIXEL_SPACING
+            pixel_message = "Measurements are at the detector plane."
+
+    # Build up the response
+    response["windowCenter"] = int(dcm_obj[WINDOW_CENTER].value.split("\\")[0]) if dcm_obj.has_key(WINDOW_CENTER) and dcm_obj[WINDOW_CENTER].value else None
+    response["windowWidth"] = int(dcm_obj[WINDOW_LEVEL].value.split("\\")[0]) if dcm_obj.has_key(WINDOW_LEVEL) and dcm_obj[WINDOW_LEVEL].value else None
+
+    # Pixel spacing attributes can contain two values packed like this:
+    # x//y
+    if spacing:
+        spacing = spacing.split("\\")
+        xSpacing = ySpacing = spacing[0]
+        if len(spacing) > 1:
+           ySpacing = spacing[1] 
+
+    response["xSpacing"] = xSpacing
+    response["ySpacing"] = ySpacing
+    response["pixelMessage"] = pixel_message
+    response["pixelAttr"] = pixel_attr
+    response["nativeRows"] = dcm_obj.Rows
+    response["nativeCols"] = dcm_obj.Columns
+    response["studyDescr"] = dcm_obj[STUDY_DESCR].value  if dcm_obj.has_key(STUDY_DESCR) else None
+    response["seriesDescr"] = dcm_obj[SERIES_DESCR].value if dcm_obj.has_key(SERIES_DESCR) else None
+    response["objectUID"] = instance_uid
+    json_response = json.dumps(response)
+
+    if request.GET.has_key('callback'):
+        json_response =  "(function(){%s(%s);})();" % (request.GET['callback'], json_response) 
+    return response
+
+
+
 

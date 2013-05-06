@@ -129,7 +129,7 @@ transferSyntax="+DICOM.const_get("EXPLICIT_BIG_ENDIAN")
     response = {}
     if [MR, CT].include?(modality_type)
         spacing =  dcm_obj[PIXEL_SPACING].value if !dcm_obj[PIXEL_SPACING].nil?
-        pixel_attr = IMAGER_PIXEL_SPACING
+        pixel_attr = PIXEL_SPACING
     elsif [CR, XA].include?(modality_type)
         # The following logic is taken from CP 586
         pixel_spacing = dcm_obj[PIXEL_SPACING].value if !dcm_obj[PIXEL_SPACING].nil?
