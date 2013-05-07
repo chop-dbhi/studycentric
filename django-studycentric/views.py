@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 import cStringIO
 import requests
 import gdcm
@@ -23,6 +23,9 @@ WINDOW_CENTER = (0x28,0x1050)
 WINDOW_LEVEL =  (0x28, 0x1051)
 CALIBRATION_TYPE =  (0x28,0x402)
 CALIBRATION_DESCR = (0x28,0x404)
+
+WADO_URL = "http://%s:%d/%s" % (settings.SC_WADO_SERVER, settings.SC_WADO_PORT, 
+            settings.SC_WADO_PATH)
 
 def calibration_details(dcm_obj):
     pass
@@ -114,10 +117,34 @@ def series(request, series_iuid):
     
     return HttpResponse(json_response, content_type="application/json")
 
+# Convenience function to get pixel calibration details
+def calibrationDetails(dcm_obj):
+    details = "Not available."
+    calibration_type = None
+    calibration_descr = None
+    calibration_type = dcm_obj[CALIBRATION_TYPE].value if \
+        dcm_obj.has_key(CALIBRATION_TYPE) else None
+    calibration_descr = dcm_obj[CALIBRATION_DESCR].value if \
+        dcm_obj[CALIBRATION_DESCR].has_key(CALIBRATOIN_DESCR) else None
+    
+    if calibration_type and calibration_descr:
+        details = "%s - %s" % (calibration_type, calibration_descr)
+    elif calibration_type or calibration_descr:
+        details = calibration_type or calibration_descr
+    
+    return details
+
+
+# Proxy to WADO server that only allows jpeg or png
+def wado(request):
+    if request.GET.has_key('contentType') and (request.GET['contentType'] == 'image/jpeg' or request.GET['contentType'] == 'image/png'):
+          r = requests.get(WADO_URL, request.GET)
+          data = r.content
+          return HttpResponse(data, content_type=request.GET['contentType'])
+    return Http404
 
 def instance(request, instance_uid):
-    wado_url = "http://%s:%d/wado" % (settings.SC_WADO_SERVER, settings.SC_WADO_PORT)
-    
+
     payload = {'contentType': 'application/dicom', 
                'seriesUID':'',
                'studyUID' :'',
@@ -125,7 +152,7 @@ def instance(request, instance_uid):
                'requestType':'WADO',
                'transferSyntax':'1.2.840.10008.1.2.2'} # explicit big endian
     # explicit little endian is  '1.2.840.10008.1.2.1'
-    r = requests.get(wado_url, params=payload)
+    r = requests.get(WADO_URL, params=payload)
     data = r.content
     file_like = cStringIO.StringIO(data)
     dcm_obj = dicom.read_file(file_like)

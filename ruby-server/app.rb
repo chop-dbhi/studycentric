@@ -67,7 +67,7 @@ def calibrationDetails(dcm_obj)
     calibration_descr = dcm_obj[CALIBRATION_DESCR].value if \
         !dcm_obj[CALIBRATION_DESCR].nil?
     
-    if calibration_type and calibration_type
+    if calibration_type and calibration_descr
         details = "#{calibration_type} - #{calibration_descr}"
     elsif calibration_type or calibration_descr
         details = calibration_type or calibration_descr

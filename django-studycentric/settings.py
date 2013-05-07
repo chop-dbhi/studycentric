@@ -26,8 +26,4 @@ SC_DICOM_PORT = 11112
 
 SC_WADO_SERVER = 'localhost'
 SC_WADO_PORT = 8080
-
-#def view (request):
-#   return HttpResponse(len(request.GET.getlist("a")))
-#
-#urlpatterns = patterns('', (r'^$', view))
+SC_WADO_PATH = 'wado'
