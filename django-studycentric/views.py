@@ -13,7 +13,7 @@ XA = "1.2.840.10008.5.1.4.1.1.12.1"
 CR = "1.2.840.10008.5.1.4.1.1.1"
 
 STUDY_IUID = (0x20,0xD)
-STUDY_DESCR = (0x8,0x1030)
+STUDY_DESCR = (0x8, 0x1030)
 SERIES_IUID = (0x20,0xE)
 SERIES_DESCR = (0x8, 0x103E)
 SOP_CLASS_UID = (0x8,0x16)
@@ -120,9 +120,9 @@ def calibrationDetails(dcm_obj):
     calibration_type = None
     calibration_descr = None
     calibration_type = dcm_obj[CALIBRATION_TYPE].value if \
-        dcm_obj.has_key(CALIBRATION_TYPE) else None
+        CALIBRATION_TYPE in dcm_obj else None
     calibration_descr = dcm_obj[CALIBRATION_DESCR].value if \
-        dcm_obj[CALIBRATION_DESCR].has_key(CALIBRATOIN_DESCR) else None
+        CALIBRATION_DESCR in dcm_obj else None
     
     if calibration_type and calibration_descr:
         details = "%s - %s" % (calibration_type, calibration_descr)
@@ -156,7 +156,7 @@ def instance(request, instance_uid):
     file_like.close()
 
     modality_type = None
-    modality_type = dcm_obj[SOP_CLASS_UID].value if dcm_obj.has_key(SOP_CLASS_UID) else None
+    modality_type = dcm_obj[SOP_CLASS_UID].value if SOP_CLASS_UID in dcm_obj else None
     spacing = None
     xSpacing = None
     ySpacing = None
@@ -164,12 +164,12 @@ def instance(request, instance_uid):
     pixel_message = None
     response = {}
     if modality_type in [MR, CT]:
-        spacing = dcm_obj[PIXEL_SPACING].value if dcm_obj.has_key(PIXEL_SPACING) else None
+        spacing = dcm_obj[PIXEL_SPACING].value if PIXEL_SPACING in dcm_obj else None
         pixel_attr = PIXEL_SPACING
     elif modality_type in [CR, XA]:
         # The following logic is taken from CP 586
-        pixel_spacing = dcm_obj[PIXEL_SPACING].value if dcm_obj.has_key(PIXEL_SPACING) else None
-        imager_spacing = dcm_obj[IMAGER_PIXEL_SPACING].value if dcm_obj.has_key(IMAGER_PIXEL_SPACING) else None
+        pixel_spacing = dcm_obj[PIXEL_SPACING].value if PIXEL_SPACING in dcm_obj else None
+        imager_spacing = dcm_obj[IMAGER_PIXEL_SPACING].value if IMAGER_PIXEL_SPACING in  dcm_obj else None
         if pixel_spacing:
             if imager_spacing:
                 if pixel_spacing == imager_spacing:
@@ -195,13 +195,12 @@ def instance(request, instance_uid):
             pixel_message = "Measurements are at the detector plane."
 
     # Build up the response
-    response["windowCenter"] = int(dcm_obj[WINDOW_CENTER].value.split("\\")[0]) if dcm_obj.has_key(WINDOW_CENTER) and dcm_obj[WINDOW_CENTER].value else None
-    response["windowWidth"] = int(dcm_obj[WINDOW_LEVEL].value.split("\\")[0]) if dcm_obj.has_key(WINDOW_LEVEL) and dcm_obj[WINDOW_LEVEL].value else None
+    response["windowCenter"] = dcm_obj[WINDOW_CENTER].value if WINDOW_CENTER in dcm_obj else None
+    response["windowWidth"] = dcm_obj[WINDOW_LEVEL].value if WINDOW_LEVEL in dcm_obj else None
 
     # Pixel spacing attributes can contain two values packed like this:
     # x//y
     if spacing:
-        spacing = spacing.split("\\")
         xSpacing = ySpacing = spacing[0]
         if len(spacing) > 1:
            ySpacing = spacing[1] 
@@ -212,14 +211,14 @@ def instance(request, instance_uid):
     response["pixelAttr"] = pixel_attr
     response["nativeRows"] = dcm_obj.Rows
     response["nativeCols"] = dcm_obj.Columns
-    response["studyDescr"] = dcm_obj[STUDY_DESCR].value  if dcm_obj.has_key(STUDY_DESCR) else None
-    response["seriesDescr"] = dcm_obj[SERIES_DESCR].value if dcm_obj.has_key(SERIES_DESCR) else None
+    response["studyDescr"] = dcm_obj[STUDY_DESCR].value if STUDY_DESCR in dcm_obj else None
+    response["seriesDescr"] = dcm_obj[SERIES_DESCR].value if SERIES_DESCR in dcm_obj else None
     response["objectUID"] = instance_uid
     json_response = json.dumps(response)
 
     if request.GET.has_key('callback'):
         json_response =  "(function(){%s(%s);})();" % (request.GET['callback'], json_response) 
-    return response
+    return HttpResponse(json_response, content_type="application/json")
 
 
 
