@@ -5,4 +5,5 @@ urlpatterns = patterns('',
    url(r'^study/(?P<study_iuid>[0-9.]+)/$', study),
    url(r'^series/(?P<series_iuid>[0-9.]+)/$', series),
    url(r'^instance/(?P<instance_uid>[0-9.]+)/$', instance),
+   url(r'^wado/$', wado),
 )

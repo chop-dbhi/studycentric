@@ -27,9 +27,6 @@ CALIBRATION_DESCR = (0x28,0x404)
 WADO_URL = "http://%s:%d/%s" % (settings.SC_WADO_SERVER, settings.SC_WADO_PORT, 
             settings.SC_WADO_PATH)
 
-def calibration_details(dcm_obj):
-    pass
-
 def study(request, study_iuid):
     # Patient Name
     response = {}
