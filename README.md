@@ -19,7 +19,7 @@ THIS SOFTWARE IS NOT INTENDED FOR PRIMARY DIAGNOSTIC, ONLY FOR SCIENTIFIC USAGE.
 
 ## What is StudyCentric?
 
-StudyCentric is web-based DICOM image viewer for use with research applications. The application communicates with a DICOM PACS via the DICOM protocol (both standard DICOM C-FIND queries and via [WADO](http://medical.nema.org/dicom/2004/04_18PU.PDF)). The standard DICOM communication is executed using a very small Ruby web-service (the server). The rest of application runs entirely in the web browser using JavaScript. 
+StudyCentric is web-based DICOM image viewer for use with research applications. The application communicates with a DICOM PACS via the DICOM protocol (both standard DICOM C-FIND queries and via [WADO](http://medical.nema.org/dicom/2004/04_18PU.PDF)). The standard DICOM communication is executed using a very Ruby web-service (the server) with implementations available in both ruby (using sinatra) or python (using django). The rest of application runs entirely in the web browser using JavaScript. 
 
 StudyCentric not a full PACS viewer, it is meant to be deployed within a larger application to view specific DICOM studies. It contains no patient or image search functionality. The expected workflow would be something like the following:
 
@@ -53,9 +53,18 @@ StudyCentric currently only supports single frame DICOM files. There is not mult
 1. We have seen issues with the ruby server being exceptionally slow on CentOS when using Ruby 1.9.2 and ruby-dicom 0.9.4. Downgrading to Ruby 1.8.7 and ruby-dicom 0.9.1 seems to remedy this, but requires a small change to the server code. Please use the code branch called ruby1.8.7 if using ruby-dicom 0.9.1 on Ruby 1.8.7.
 
 ## Requirements
-
+Either the ruby server _or_ the python server may be used. They provide identical functionality.
+### Ruby
 1. [Sinatra](http://www.sinatrarb.com/)
 2. [ruby-dicom](http://github.com/dicom/ruby-dicom)
+
+### Python
+1. [requests](http://docs.python-requests.org/en/latest/) >= 1.2.0
+1. [django](https://www.djangoproject.com/) (tested with 1.5)
+1. [pydicom](https://code.google.com/p/pydicom/) >= 0.9.8
+1. [gdcm](http://gdcm.sourceforge.net/wiki/index.php/Main_Page) with python wrappers >= 2.0. See installation instructions [here](http://gdcm.sourceforge.net/wiki/index.php/Getting_Started). On OS X, the following were required to build.
+ 1. swig
+ 1. cmake
 
 
 # Installation
@@ -69,8 +78,10 @@ Both the Server and the Client will need to communicate with the PACS system. Th
 1. Make the WADO port of your DICOM server available to the client via a reverse proxy. This would allow you to restrict the types of requests you allow a user to make of the WADO server, for example, dropping all WADO requests for a contenttype of WADO and only allowing JPEG requests through. 
 1. Proxy through the StudyCentric server. The StudyCentric client has an endpoint that will proxy requests through to the DICOM WADO server, attempting to drop any requests for the DICOM files (use this at your own risk). You can use this by configuring the client's WADO server setting (see below) to point to the /wado endpoint of the StudyCentric server. This method has not been tested for security or performance and will likely be slower than the above two options as it will require that every request for an image go through a Ruby interpreter.
 
-## Installing the server
+## Installing a server
 
+Either server may be installed.
+### Ruby server
 The StudyCentric server is a very simple Sinatra Ruby app. It can be installed a number of ways. Our internal instances serve the application from [Apache using the Passenger Phusion module](http://www.pastbedti.me/2009/11/deploying-a-sinatra-app-with-apache-and-phusion-passenger-a-k-a-mod_rack/), but there are other [options](http://www.kalzumeus.com/2010/01/15/deploying-sinatra-on-ubuntu-in-which-i-employ-a-secretary/). Sinatra is fully compatible with [Rack](http://en.wikipedia.org/wiki/Rack_(web_server_interface\)) so any web server capable of deploying a Rack application will work.  See the bottom of this section for a very simple apache configuration.
 
 ### Server Ruby gem requirements
@@ -81,7 +92,7 @@ The StudyCentric server is a very simple Sinatra Ruby app. It can be installed a
 
 ### Server Configuration
 
-You need to configure the server so it knows the location of your DICOM PACS. In the server directory there is a config.yml file that needs to be configured. It requires that you fill in the following configuration options:
+You need to configure the server so it knows the location of your DICOM PACS. In the ruby-server directory there is a config.yml file that needs to be configured. It requires that you fill in the following configuration options:
 
 * dicom\_server\_host: the hostname of your DICOM server (PACS)
 * ae: the [Application Entity](http://www.dabsoft.ch/dicom/8/C.1/) of your DICOM Server
@@ -105,17 +116,32 @@ This configuration is how we have the server installed in development on a [Vagr
           DocumentRoot /vagrant/studycentric
 
           <LocationMatch ^/server>
-              PassengerAppRoot /vagrant/studycentric/server
+              PassengerAppRoot /vagrant/studycentric/ruby-server
               RackBaseURI /server
           </LocationMatch>
 
-          <Directory /vagrant/studycentric/server>
+          <Directory /vagrant/studycentric/ruby-server>
              # This relaxes Apache security settings.
              AllowOverride all
              # MultiViews must be turned off.
              Options -MultiViews
           </Directory>
     </VirtualHost>
+
+### Python server
+
+The python server is a simple django application. There are many different ways to deploy a django application in production so it won't be covered here, but the application directory in the repository is django-server/. To try the server on a development *nix machine, run the supplied run_server.sh script in the django-server directory.
+
+There are a few configuration variables that need to be set in the settings.py file.
+
+* SC\_DICOM\_SERVER: hostname of your DICOM server
+* SC\_DICOM\_PORT: DICOM port of your DICOM server
+* SC\_WADO\_SERVER: hostname of your WADO server. Should be the same as your DICOM server.
+* SC\_WADO\_PORT: WADO port on your DICOM server.
+* SC\_WADO\_PATH: path the WADO server is mounted at. Usually /wado.
+* AET : the [Application Entity](http://www.dabsoft.ch/dicom/8/C.1/) of your DICOM Server
+
+You will also need to configure the client (see below) so it knows where you have installed the StudyCentric server.
 
 ## Installing the client
 The StudyCentric client is written entirely in JavaScript and HTML. It can be installed  by serving the client directory from your preferred web server.
