@@ -135,7 +135,7 @@ def calibrationDetails(dcm_obj):
 # Proxy to WADO server that only allows jpeg or png
 def wado(request):
     if request.GET.has_key('contentType') and (request.GET['contentType'] == 'image/jpeg' or request.GET['contentType'] == 'image/png'):
-          r = requests.get(WADO_URL, request.GET)
+          r = requests.get(WADO_URL, params=request.GET)
           data = r.content
           return HttpResponse(data, content_type=request.GET['contentType'])
     return Http404
