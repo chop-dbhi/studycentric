@@ -16,4 +16,7 @@ urlpatterns = patterns('',
 if settings.LOGIN_ENABLED:
     urlpatterns += patterns('',
         url(r'^app/$', login_required(app_root)),
+        # Below enables a simple login that will use the model authorization backend
+        # Replace with your own auth system if necessary
+        url(r'^login/$', 'django.contrib.auth.views.login'),
 )
