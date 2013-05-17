@@ -13,7 +13,17 @@ require(['jquery',
          'underscore',
          'libs/jquery.mousewheel',
          'libs/jquery-ui-min',
-         'libs/jquery.nanoscroller.min'], function($, Models, Config, Utils, LightBox, _) {
+         'libs/jquery.nanoscroller.min'
+         "libs/biginteger.js"
+         "libs/schemeNumber.js"
+         "libs/raphael-min.js"
+         "libs/require.js"
+
+
+
+
+
+], function($, Models, Config, Utils, LightBox, _) {
     
     var lightBox;
     var t_window = _.template("<p>Window Center: <%=center%></p><p>Window Width: <%=width%></p>");

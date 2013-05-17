@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.http import HttpResponse, Http404
+from django.shortcuts import render
+from django.conf import settings
 import cStringIO
 import requests
 import gdcm
@@ -26,6 +28,11 @@ CALIBRATION_DESCR = (0x28,0x404)
 
 WADO_URL = "http://%s:%d/%s" % (settings.SC_WADO_SERVER, settings.SC_WADO_PORT, 
             settings.SC_WADO_PATH)
+
+def app_root(request):
+    document = render(request, "index.html")
+    document = document.replace('var STATIC_ROOT = "";','var STATIC_URL = "%s";' % settings.STATIC_URL)
+    return document;
 
 def study(request, study_iuid):
     # Patient Name
