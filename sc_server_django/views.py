@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.http import HttpResponse, Http404
-from django.shortcuts import render
+from django.template.loader import get_template
+from django.template import Context
 from django.conf import settings
 import cStringIO
 import requests
@@ -30,9 +31,10 @@ WADO_URL = "http://%s:%d/%s" % (settings.SC_WADO_SERVER, settings.SC_WADO_PORT,
             settings.SC_WADO_PATH)
 
 def app_root(request):
-    document = render(request, "index.html")
-    document = document.replace('var STATIC_ROOT = "";','var STATIC_URL = "%s";' % settings.STATIC_URL)
-    return document;
+    document_template = get_template("index.html")
+    document = document_template.render(Context({}))
+    document = document.replace('var STATIC_URL = "";','var STATIC_URL = "%s";' % settings.STATIC_URL)
+    return HttpResponse(document)
 
 def study(request, study_iuid):
     # Patient Name

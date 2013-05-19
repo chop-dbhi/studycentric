@@ -2,9 +2,9 @@ import os
 import sys
 from django.conf.urls.defaults import patterns
 from django.http import HttpResponse
-from local_settings import *
 
-LOGIN_ENABLED = True
+SECRET_KEY = "REPLACE_WITH_REAL_SECRET_KEY"
+LOGIN_ENABLED = False
 
 ROOT_URLCONF = 'urls'
 
@@ -22,7 +22,7 @@ FORCE_SCRIPT_NAME = ''
 LOGIN_URL = FORCE_SCRIPT_NAME + '/login/'
 LOGIN_REDIRECT_URL = FORCE_SCRIPT_NAME + '/app/'
 STATIC_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+'/client/'
-STATIC_URL = ""
+STATIC_URL = "/client/"
 
 if LOGIN_ENABLED:
     INSTALLED_APPS += ('django.contrib.sessions', 

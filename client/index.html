@@ -74,12 +74,11 @@
         script = d.createElement('script');
         script.type = 'text/javascript';
         script.async = true;
-        script.src = STATIC_ROOT+'js/libs/require.js';
+        script.src = STATIC_URL+'js/libs/require.js';
         script.setAttribute('data-main', STATIC_URL+'js/main');
         d.getElementsByTagName('head')[0].appendChild(script);
        }(document));
   </script>
-  <script data-main="js/main" src="js/libs/require.js"></script>
 
   <!-- _ templates-->
   <script id="seriesview" type="text/jst">

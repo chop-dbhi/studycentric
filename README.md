@@ -19,11 +19,11 @@ THIS SOFTWARE IS NOT INTENDED FOR PRIMARY DIAGNOSTIC, ONLY FOR SCIENTIFIC USAGE.
 
 ## What is StudyCentric?
 
-StudyCentric is web-based DICOM image viewer for use with research applications. The application communicates with a DICOM PACS via the DICOM protocol (both standard DICOM C-FIND queries and via [WADO](http://medical.nema.org/dicom/2004/04_18PU.PDF)). The standard DICOM communication is executed using a very Ruby web-service (the server) with implementations available in both ruby (using sinatra) or python (using django). The rest of application runs entirely in the web browser using JavaScript. 
+StudyCentric is web-based DICOM image viewer for use with research applications. The application communicates with a DICOM PACS via the DICOM protocol (both standard DICOM C-FIND queries and via [WADO](http://medical.nema.org/dicom/2004/04_18PU.PDF)). The standard DICOM communication is executed use a simple REST service with implementations available in both ruby (using sinatra) or python (using django). The rest of application runs entirely in the web browser using JavaScript. 
 
 StudyCentric not a full PACS viewer, it is meant to be deployed within a larger application to view specific DICOM studies. It contains no patient or image search functionality. The expected workflow would be something like the following:
 
-1. A researcher looks through a database and finds that there are relevant studies.
+1. A researcher looks through a database of patients and finds that there are relevant studies associated.
 1. The database provides links to StudyCentric, each configured with the Study UID of a study.
 1. The researcher clicks the link, which launches StudyCentric, telling it to display a particular image study.
 
@@ -52,8 +52,14 @@ StudyCentric currently only supports single frame DICOM files. There is not mult
 1. StudyCentric is currently not working in IE 8 (untested in IE 9) due to inclusion of a BigDecimal library that is not working in IE. We are currently working on a fix.
 1. We have seen issues with the ruby server being exceptionally slow on CentOS when using Ruby 1.9.2 and ruby-dicom 0.9.4. Downgrading to Ruby 1.8.7 and ruby-dicom 0.9.1 seems to remedy this, but requires a small change to the server code. Please use the code branch called ruby1.8.7 if using ruby-dicom 0.9.1 on Ruby 1.8.7.
 
+## Which backend service should I use?
+The ruby and python implementations both serve the same purpose, which is to speak the binary DICOM protocol required to determine which series are in a given study, and in turn, which objects are in a given series. They implementations are identical except for the following features available only with the Python web service:
+
+1. The python web service is in our testing noticeably quicker.
+1. You can require that users authenticate before using the application if you use the Python web service. This uses django's auth functionality. See [requiring authorization](#requiring-authorization) below.
+
 ## Requirements
-Either the ruby server _or_ the python server may be used. They provide identical functionality.
+
 ### Ruby
 1. [Sinatra](http://www.sinatrarb.com/)
 2. [ruby-dicom](http://github.com/dicom/ruby-dicom)
@@ -62,8 +68,8 @@ Either the ruby server _or_ the python server may be used. They provide identica
 1. [requests](http://docs.python-requests.org/en/latest/) >= 1.2.0
 1. [django](https://www.djangoproject.com/) (tested with 1.5)
 1. [pydicom](https://code.google.com/p/pydicom/) >= 0.9.8
-1. [gdcm](http://gdcm.sourceforge.net/wiki/index.php/Main_Page) with python wrappers >= 2.0. See installation instructions [here](http://gdcm.sourceforge.net/wiki/index.php/Getting_Started). On OS X, the following were required to build.
- 1. swig
+1. [gdcm](http://gdcm.sourceforge.net/wiki/index.php/Main_Page) with python wrappers >= 2.2.3. See installation instructions in the INSTALL.txt file that comes with the source package (the instructions on the wiki are not as complete). Or see the section (installing gdcm in a virtualenv)[#installing-gdcm-in-a-virtualenv] for assistance installing gdcm. On Linux and OS X, the following were required to build.
+ 1. swig >= 2.0.9
  1. cmake
 
 
@@ -130,7 +136,7 @@ This configuration is how we have the server installed in development on a [Vagr
 
 ### Python server
 
-The python server is a simple django application. There are many different ways to deploy a django application in production so it won't be covered here, but the application directory in the repository is django-server/. To try the server on a development *nix machine, run the supplied run_server.sh script in the django-server directory.
+The python server is a simple django application. There are many different ways to deploy a django application in production so it won't be covered here, but the application directory in the repository is sc_server_django/. Some sample nginx and uwsgi configurations are included in the project, but they are optional.
 
 There are a few configuration variables that need to be set in the settings.py file.
 
@@ -140,11 +146,51 @@ There are a few configuration variables that need to be set in the settings.py f
 * SC\_WADO\_PORT: WADO port on your DICOM server.
 * SC\_WADO\_PATH: path the WADO server is mounted at. Usually /wado.
 * AET : the [Application Entity](http://www.dabsoft.ch/dicom/8/C.1/) of your DICOM Server
+#### Creating a virtualenv and installing dependencies
 
-You will also need to configure the client (see below) so it knows where you have installed the StudyCentric server.
+All dependencies except gdcm can be installed by creating a virtualenv and executing the following command from the root of the github repo
+
+    pip install -R sc_server_django/requirements.txt
+    
+Because gdcm is a c library with python wrappers, installing it is a bit more manual.
+
+##### Installing gdcm in a virtualenv
+
+Following the gdcm installation instructions should work fine, but this section will provide a little more assistance.  These instructions assume a unix-like environment.
+
+1. Create your python virtualenv and activate it. Making the root of the git repository your virutalenv root is probably the easiest.
+1. Make sure cmake and swig are installed.
+1. Download gdcm and unzip it. Rename the directory it unzips into to `gdcm`.
+1. Create a directory at the same level as the `gdcm` directory called `gdcbin` and descend into it.
+1. Run the following commands
+   1. ccmake ../gdcm
+        1. A configure app will open up. Make sure to turn on python wrappers and shared libraries. It's a little tricky, but just follow the instructions at the bottom of the screen.
+   1. make
+1. Copy the following files from `gdcm/bin` to your virtualenv's `site-packages` folder.
+   1. gdcm.py
+   1. gdcmswig.py
+   1. _gdcmswig.so
+
+#### Requiring Authorization
+The original intention of StudyCentric was to make it a simple JavaScript/HTML only app that hits a simple web service only when absolutely required for browser limitations or performance reasons. If that is all you need, you can still do this. Simply run the service as is. Realistically, because of the nature of this type of application, you may have authorization requirements. You can accomplish this at the webserver level with something like http basic auth, but for a better user experience the python backend can be configured to require authentication. There is a setting for the python server that will essentially turn the app into a django app that requires the user to authenticate. Basically, instead of pointing users to the StudyCentric index.html static file, you point them to a url endpoint `app/` that will require authentication before showing anything. 
+##### Enabling authorization
+As this turns the project into a more complex django application, this may require some knowledge of django, but this guide will try to walk through all the steps.
+1. Set the `LOGIN_ENABLED` setting to true in your django settings.py file. 
+1. You need a django database backend to hold the authorization and session information (this is required by django when you use its authorization features). By default, StudyCentric will just use sqlite, but you can also change that in your settings.py file.
+1. As is typical with django deployments, the actual client static files are not served up by django. You should serve them up with a webserver like apache or nginx. You will need to set the `STATIC_URL` settings in the django settings file to point to the url you are serving the client static files from. The only static file that django will serve up in LOGIN_ENABLED mode is the main index.html for the application. This is because we want to require that the user authorize before using the client at all.
+
+Execute the following command `./run-syncdb.sh`
+
+Then deploy the django app as usual. For testing you can use
+
+     ./run-server.sh
+
+to bring up a local instance running on port 8000.
+
 
 ## Installing the client
-The StudyCentric client is written entirely in JavaScript and HTML. It can be installed  by serving the client directory from your preferred web server.
+The StudyCentric client is written entirely in JavaScript and HTML. It can be installed by serving the client directory from your preferred web server.
+
 ### Configuration
 In client/js/ there is a JavaScript file called config.js: 
 

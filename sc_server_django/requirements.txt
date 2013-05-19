@@ -10,5 +10,6 @@
 requests
 django
 pydicom
+uwsgi
 
 

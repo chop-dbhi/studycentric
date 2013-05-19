@@ -7,9 +7,15 @@ sdist
 build
 pip-log.txt
 MANIFEST
-
+.Python
 .watch-pid
 .sass-cache
+testdb
+lib/
+bin/
+include/
+gdcm/
+gdcmbin/
 
 # ignore local settings file intended for environment-specific settings
 local_settings.py
