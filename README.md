@@ -146,11 +146,12 @@ There are a few configuration variables that need to be set in the settings.py f
 * SC\_WADO\_PORT: WADO port on your DICOM server.
 * SC\_WADO\_PATH: path the WADO server is mounted at. Usually /wado.
 * AET : the [Application Entity](http://www.dabsoft.ch/dicom/8/C.1/) of your DICOM Server
+
 #### Creating a virtualenv and installing dependencies
 
 All dependencies except gdcm can be installed by creating a virtualenv and executing the following command from the root of the github repo
 
-    pip install -R sc_server_django/requirements.txt
+    pip install -r sc_server_django/requirements.txt
     
 Because gdcm is a c library with python wrappers, installing it is a bit more manual.
 
