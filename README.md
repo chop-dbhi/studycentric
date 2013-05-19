@@ -52,11 +52,11 @@ StudyCentric currently only supports single frame DICOM files. There is not mult
 1. StudyCentric is currently not working in IE 8 (untested in IE 9) due to inclusion of a BigDecimal library that is not working in IE. We are currently working on a fix.
 1. We have seen issues with the ruby server being exceptionally slow on CentOS when using Ruby 1.9.2 and ruby-dicom 0.9.4. Downgrading to Ruby 1.8.7 and ruby-dicom 0.9.1 seems to remedy this, but requires a small change to the server code. Please use the code branch called ruby1.8.7 if using ruby-dicom 0.9.1 on Ruby 1.8.7.
 
-## Which backend service should I use?
+## Which server should I use?
 The ruby and python implementations both serve the same purpose, which is to speak the binary DICOM protocol required to determine which series are in a given study, and in turn, which objects are in a given series. They implementations are identical except for the following features available only with the Python web service:
 
-1. The python web service is in our testing noticeably quicker.
-1. You can require that users authenticate before using the application if you use the Python web service. This uses django's auth functionality. See [requiring authorization](#requiring-authorization) below.
+1. The python server is noticeably faster.
+1. You can require that users authenticate before using the application if you use the python web service. This uses django's auth functionality. See [requiring authorization](#requiring-authorization) below.
 
 ## Requirements
 
@@ -68,7 +68,7 @@ The ruby and python implementations both serve the same purpose, which is to spe
 1. [requests](http://docs.python-requests.org/en/latest/) >= 1.2.0
 1. [django](https://www.djangoproject.com/) (tested with 1.5)
 1. [pydicom](https://code.google.com/p/pydicom/) >= 0.9.8
-1. [gdcm](http://gdcm.sourceforge.net/wiki/index.php/Main_Page) with python wrappers >= 2.2.3. See installation instructions in the INSTALL.txt file that comes with the source package (the instructions on the wiki are not as complete). Or see the section (installing gdcm in a virtualenv)[#installing-gdcm-in-a-virtualenv] for assistance installing gdcm. On Linux and OS X, the following were required to build.
+1. [gdcm](http://gdcm.sourceforge.net/wiki/index.php/Main_Page) with python wrappers >= 2.2.3. See installation instructions in the INSTALL.txt file that comes with the source package (the instructions on the wiki are not as complete). Or see the section [installing gdcm in a virtualenv](#installing-gdcm-in-a-virtualenv) for assistance installing gdcm. On Linux and OS X, the following were required to build.
  1. swig >= 2.0.9
  1. cmake
 
