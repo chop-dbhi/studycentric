@@ -23,6 +23,7 @@ LOGIN_URL = FORCE_SCRIPT_NAME + '/login/'
 LOGIN_REDIRECT_URL = FORCE_SCRIPT_NAME + '/app/'
 STATIC_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+'/client/'
 STATIC_URL = "/client/"
+MEDIA_ROOT = ""
 
 if LOGIN_ENABLED:
     INSTALLED_APPS += ('django.contrib.sessions', 

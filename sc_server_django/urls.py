@@ -19,4 +19,16 @@ if settings.LOGIN_ENABLED:
         # Below enables a simple login that will use the model authorization backend
         # Replace with your own auth system if necessary
         url(r'^login/$', 'django.contrib.auth.views.login'),
-)
+    )
+
+
+# In production, these two locations must be served up statically
+if settings.DEBUG:
+    urlpatterns += patterns('django.views.static',
+        url(r'^%s(?P<path>.*)$' % re.escape(settings.MEDIA_URL.lstrip('/')), 'serve', {
+                  'document_root': settings.MEDIA_ROOT
+        }),
+        url(r'^%s(?P<path>.*)$' % re.escape(settings.STATIC_URL.lstrip('/')), 'serve', {
+                        'document_root': settings.STATIC_ROOT
+        }),
+    )
