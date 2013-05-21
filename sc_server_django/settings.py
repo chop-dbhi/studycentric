@@ -2,7 +2,7 @@ import os
 import sys
 
 SECRET_KEY = "REPLACE_WITH_REAL_SECRET_KEY"
-LOGIN_ENABLED = True
+LOGIN_ENABLED = False 
 
 ROOT_URLCONF = 'urls'
 
