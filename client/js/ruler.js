@@ -1,4 +1,4 @@
-define(["jquery",  "libs/schemeNumber" ], function(jQuery){
+define(["jquery",  "libs/big.min" ], function(jQuery, Big){
     
     var YELLOW = "#E5E500";
     var ORANGE = "#FFAA56";
@@ -6,7 +6,6 @@ define(["jquery",  "libs/schemeNumber" ], function(jQuery){
     var WHITE = "#FFFFFF";
     var GREEN = "#00FF00";
     
-    var fn = SchemeNumber.fn;
     // This class represents the length rulers the user draws on the screen to perform a distance measurement.
     // lightBox should be the Raphael-based svg object that this ruler resides on
     var ruler = function(lightBox, ratio, xHeaderSpacing, yHeaderSpacing){
@@ -34,34 +33,32 @@ define(["jquery",  "libs/schemeNumber" ], function(jQuery){
         };
     
         var calculateLength = function (){
-            // We are doing floating point math here, which is not perfect, there is the opportunity for small
-            // representation errors. We are using the javascript-bignum library (https://github.com/jtobey/javascript-bignum)
-            // in an attempt at arbitrary precision.
 
             var mult = 1;
-            var xDiff = startPoint.x - endPoint.x;
-            var yDiff = startPoint.y - endPoint.y;
+            var xDiff = Big(startPoint.x).minus(endPoint.x);
+            var yDiff = Big(startPoint.y).minus(endPoint.y);
             
-            xDiff = fn["/"](xDiff,ratio);
-            yDiff = fn["/"](yDiff,ratio);
+            xDiff = xDiff.div(ratio);
+            yDiff = yDiff.div(ratio);
             
-            var xSpacing = 1;
-            var ySpacing = 1;
+            var xSpacing = Big(1);
+            var ySpacing = Big(1);
             // If we don't have pixelSpacing data, units will be in pixels
             // Note it is intentional here that 0 or null or undefined for either var will result
             // in false
             var units = "px";
-            if (xHeaderSpacing && yHeaderSpacing){ 
+            if (xHeaderSpacing && yHeaderSpacing){
                 units = "mm";
-                xSpacing = xHeaderSpacing;
-                ySpacing = yHeaderSpacing;
+                xSpacing = Big(xHeaderSpacing);
+                ySpacing = Big(yHeaderSpacing);
             }
             
-            var xDistance = fn["*"](xSpacing, xDiff);
-            var yDistance = fn["*"](ySpacing, yDiff);
+            var xDistance = xSpacing.times(xDiff);
+            var yDistance = ySpacing.times(yDiff);
             
-            var measurement = fn["sqrt"](fn["+"](fn["*"](xDistance,xDistance), fn["*"](yDistance,yDistance)));
-            
+            //var measurement = fn["sqrt"](fn["+"](fn["*"](xDistance,xDistance), fn["*"](yDistance,yDistance)));
+            var measurement = xDistance.pow(2).plus(yDistance.pow(2));
+            measurement = measurement.sqrt();
             measurement = measurement.toFixed(2)+ units;
             
             return measurement;
