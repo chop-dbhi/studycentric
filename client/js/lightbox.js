@@ -1,4 +1,4 @@
-define(["jquery", "ruler","libs/raphaelle"], function($,ruler) {
+define(["jquery", "ruler","libs/big.min", "libs/raphaelle"], function($, ruler, Big) {
 // The lightbox object will represent the image at the center of the screen when measuring is enabled
     var LightBox = function(id){
         var that = {};
@@ -7,7 +7,7 @@ define(["jquery", "ruler","libs/raphaelle"], function($,ruler) {
         var width = dcm.width;
         var height = dcm.height;
         var attrs = dcmImageLink.data("dicom_attrs");
-        var ratio = height / attrs.nativeRows;
+        var ratio = Big(height).div(attrs.nativeRows);
         var imgTop = dcmImageLink.css("top");
         var imgLeft = dcmImageLink.css("left");
         var lightBoxDiv = $('<div id="lightbox" width="'+width+'"></div>');
@@ -78,7 +78,7 @@ define(["jquery", "ruler","libs/raphaelle"], function($,ruler) {
                 }else{
                     x = event.pageX - Math.floor(left); // Firefox has a bug here, giving non-integer back.
                     y = event.pageY - top;
-                    currentRuler = ruler(that,ratio, attrs.xSpacing, attrs.ySpacing);
+                    currentRuler = ruler(that, ratio, attrs.xSpacing, attrs.ySpacing);
                 }
                 currentRuler.start({x:x,y:y});
     

@@ -12,5 +12,6 @@ define({
     SeriesThumbNailSizePx:150,
     DefaultImgSize:128,
     ImagesPerRow:3,
-    DisableClinicalWarning:false
+    DisableClinicalWarning:false,
+    MeasurementPrecision:1
 });

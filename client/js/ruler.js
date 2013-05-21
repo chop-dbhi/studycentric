@@ -1,4 +1,4 @@
-define(["jquery",  "libs/big.min" ], function(jQuery, Big){
+define(["jquery", "config",  "libs/big.min" ], function(jQuery, Config,  Big){
     
     var YELLOW = "#E5E500";
     var ORANGE = "#FFAA56";
@@ -59,7 +59,7 @@ define(["jquery",  "libs/big.min" ], function(jQuery, Big){
             //var measurement = fn["sqrt"](fn["+"](fn["*"](xDistance,xDistance), fn["*"](yDistance,yDistance)));
             var measurement = xDistance.pow(2).plus(yDistance.pow(2));
             measurement = measurement.sqrt();
-            measurement = measurement.toFixed(2)+ units;
+            measurement = measurement.toFixed(Config.MeasurementPrecision)+ units;
             
             return measurement;
         };
