@@ -176,7 +176,7 @@ The original intention of StudyCentric was to make it a simple JavaScript/HTML o
 ##### Enabling authorization
 As this turns the project into a more complex django application, this may require some knowledge of django, but this guide will try to walk through all the steps.
 
-1. Set the `LOGIN_ENABLED` setting to true in your django settings.py file. 
+1. Set the `LOGIN_ENABLED` setting to `True` in your django settings.py file. 
 1. You need a django database backend to hold the authorization and session information (this is required by django when you use its authorization features). By default, StudyCentric will just use sqlite, but you can also change that in your settings.py file.
 1. As is typical with django deployments, the actual client static files are not served up by django. You should serve them up with a webserver like apache or nginx. You will need to set the `STATIC_URL` settings in the django settings file to point to the url you are serving the client static files from. The only static file that django will serve up in LOGIN_ENABLED mode is the main index.html for the application. This is because we want to require that the user authorize before using the client at all.
 
