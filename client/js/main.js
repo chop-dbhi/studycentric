@@ -6,23 +6,16 @@ require.config({
     }
 });
 require(['jquery',
-         'models', 
+         'models',
          'config',
          'utils',
          'lightbox',
          'underscore',
          'libs/jquery.mousewheel',
          'libs/jquery-ui-min',
-         'libs/jquery.nanoscroller.min'
-         "libs/biginteger.js"
-         "libs/schemeNumber.js"
-         "libs/raphael-min.js"
-         "libs/require.js"
-
-
-
-
-
+         'libs/jquery.nanoscroller.min',
+         "libs/biginteger",
+         "libs/raphael-min"
 ], function($, Models, Config, Utils, LightBox, _) {
     
     var lightBox;

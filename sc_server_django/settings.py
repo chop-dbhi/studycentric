@@ -1,10 +1,8 @@
 import os
 import sys
-from django.conf.urls.defaults import patterns
-from django.http import HttpResponse
 
 SECRET_KEY = "REPLACE_WITH_REAL_SECRET_KEY"
-LOGIN_ENABLED = False
+LOGIN_ENABLED = True
 
 ROOT_URLCONF = 'urls'
 
@@ -22,8 +20,8 @@ FORCE_SCRIPT_NAME = ''
 LOGIN_URL = FORCE_SCRIPT_NAME + '/login/'
 LOGIN_REDIRECT_URL = FORCE_SCRIPT_NAME + '/app/'
 STATIC_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+'/client/'
-STATIC_URL = "/client/"
-MEDIA_ROOT = ""
+STATIC_URL = "/static/"
+MEDIA_ROOT = "upload/"
 
 if LOGIN_ENABLED:
     INSTALLED_APPS += ('django.contrib.sessions', 

@@ -1,4 +1,4 @@
-define(["jquery" ], function(jQuery){
+define(["jquery",  "libs/schemeNumber" ], function(jQuery){
     
     var YELLOW = "#E5E500";
     var ORANGE = "#FFAA56";

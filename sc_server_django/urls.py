@@ -1,3 +1,4 @@
+import re
 from views import *
 from django.conf.urls import patterns, url
 from django.conf import settings
@@ -25,9 +26,6 @@ if settings.LOGIN_ENABLED:
 # In production, these two locations must be served up statically
 if settings.DEBUG:
     urlpatterns += patterns('django.views.static',
-        url(r'^%s(?P<path>.*)$' % re.escape(settings.MEDIA_URL.lstrip('/')), 'serve', {
-                  'document_root': settings.MEDIA_ROOT
-        }),
         url(r'^%s(?P<path>.*)$' % re.escape(settings.STATIC_URL.lstrip('/')), 'serve', {
                         'document_root': settings.STATIC_ROOT
         }),
