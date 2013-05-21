@@ -14,7 +14,6 @@ require(['jquery',
          'libs/jquery.mousewheel',
          'libs/jquery-ui-min',
          'libs/jquery.nanoscroller.min',
-         "libs/biginteger",
          "libs/raphael-min"
 ], function($, Models, Config, Utils, LightBox, _) {
     
