@@ -49,7 +49,6 @@ StudyCentric currently only supports single frame DICOM files. There is not mult
 * X-ray
 
 ### Known Issues
-1. StudyCentric is currently not working in IE 8 (untested in IE 9) due to inclusion of a BigDecimal library that is not working in IE. We are currently working on a fix.
 1. We have seen issues with the ruby server being exceptionally slow on CentOS when using Ruby 1.9.2 and ruby-dicom 0.9.4. Downgrading to Ruby 1.8.7 and ruby-dicom 0.9.1 seems to remedy this, but requires a small change to the server code. Please use the code branch called ruby1.8.7 if using ruby-dicom 0.9.1 on Ruby 1.8.7.
 
 ## Which server should I use?
@@ -211,25 +210,25 @@ define({
     SeriesThumbNailSizePx:150,
     DefaultImgSize:128,
     ImagesPerRow:3,
-    DisableClinicalWarning:false
+    DisableClinicalWarning:false,
+    MeasurementPrecision:1
 });
 ```
 This file must be configured properly to match your PACS server and StudyCentric Server configuration. Descriptions of each option are outlined below:
 
-* StudyCentricProt: This must be set to the protocol you are using to serve the * StudyCentric server (either http or https)
+* StudyCentricProt: This must be set to the protocol you are using to serve the StudyCentric server (either http or https)
 * StudyCentricHost: This host of your StudyCentric server
 * StudyCentricPath: The url path to the StudyCentric server
 * StudyCentricPort: The port you are serving the StudyCentric server from
 * WADOProt: The protocol you are serving the WADO service from (http or https)
 * WADOHost: The hostname of your WADO server
 * WADOPath: The url path to your WADO server
-* WADOPort: The port of the wado service (by default on DCM4CHEE this is 8080)
+* WADOPort: The port of the WADO service (by default on DCM4CHEE this is 8080)
 
-The last five options affect the appearance of the client:
+The last six options affect the appearance of the client:
 * InstanceThumbNailSizePx: This controls the size of the image thumbnails that appear in the right-hand side series preview drawer.
 * SeriesThumbNailSizePx: This controls the thumbnail size for the Series thumbnails displayed on the left-hand side of the screen.
 * DefaultImgSize: This controls the default image size of the displayed image in the center of the screen.
 * ImagesPerRow: This controls the number of images displayed per row in the right-hand side series preview drawer.
 * DisableClinicalWarning: This controls whether StudyCentric will prompt the user to agree that it is not to be used for clinical or diagnostic purposes. The default is false, so the user will be prompted each time they use the application. It is recommended that this default be used.
-
-
+* MeasurementPrecision: This determines the number of decimal places shown in in the distance measurements (in mm or pixels). It is very important to keep in mind that the measurement tool is not high quality and is not meant to be used for diagnosis. The appearance of images can change across different browsers because StudyCentric requests lossy jpegs from the PACS and interpolation algorithms vary. Care should be taken to not provide a false sense of accuracy by providing more precision than the data and image actually provides.
