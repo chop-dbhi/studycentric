@@ -24,7 +24,7 @@ SOP_CLASS_UID = "0008,0016"
 PIXEL_SPACING = "0028,0030"      
 IMAGER_PIXEL_SPACING = "0018,1164"
 WINDOW_CENTER = "0028,1050"
-WINDOW_LEVEL =  "0028,1051"
+WINDOW_WIDTH =  "0028,1051"
 STUDY_DESCR = "0008,1030"
 SERIES_DESCR = "0008,103E"
 CALIBRATION_TYPE =  "0028,0402"
@@ -164,7 +164,7 @@ transferSyntax="+DICOM.const_get("EXPLICIT_BIG_ENDIAN")
 
     # Build up the response
     response[:windowCenter] = dcm_obj[WINDOW_CENTER].value.split("\\")[0].to_i if !dcm_obj[WINDOW_CENTER].nil? and !dcm_obj[WINDOW_CENTER].value.nil?
-    response[:windowWidth] = dcm_obj[WINDOW_LEVEL].value.split("\\")[0].to_i if !dcm_obj[WINDOW_LEVEL].nil? and !dcm_obj[WINDOW_LEVEL].value.nil?
+    response[:windowWidth] = dcm_obj[WINDOW_WIDTH].value.split("\\")[0].to_i if !dcm_obj[WINDOW_WIDTH].nil? and !dcm_obj[WINDOW_WIDTH].value.nil?
 
     # Pixel spacing attributes can contain two values packed like this:
     # x//y

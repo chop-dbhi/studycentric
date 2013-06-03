@@ -23,7 +23,7 @@ SOP_CLASS_UID = (0x8,0x16)
 PIXEL_SPACING = (0x28,0x30)
 IMAGER_PIXEL_SPACING = (0x18,0x1164)
 WINDOW_CENTER = (0x28,0x1050)
-WINDOW_LEVEL =  (0x28, 0x1051)
+WINDOW_WIDTH =  (0x28, 0x1051)
 CALIBRATION_TYPE =  (0x28,0x402)
 CALIBRATION_DESCR = (0x28,0x404)
 
@@ -204,8 +204,20 @@ def instance(request, instance_uid):
             pixel_message = "Measurements are at the detector plane."
 
     # Build up the response
-    response["windowCenter"] = dcm_obj[WINDOW_CENTER].value if WINDOW_CENTER in dcm_obj else None
-    response["windowWidth"] = dcm_obj[WINDOW_LEVEL].value if WINDOW_LEVEL in dcm_obj else None
+    response["windowCenter"] = None
+    response["windowWidth"] = None
+
+    if WINDOW_CENTER in dcm_obj:
+        if dcm_obj[WINDOW_CENTER].VM > 1:
+            response["windowCenter"] = int(dcm_obj[WINDOW_CENTER].value[0])
+        else:
+            response["windowCenter"] = int(dcm_obj[WINDOW_CENTER].value)
+
+    if WINDOW_WIDTH in dcm_obj:
+        if dcm_obj[WINDOW_WIDTH].VM > 1:
+            response["windowWidth"] = int(dcm_obj[WINDOW_WIDTH].value[0])
+        else:
+            response["windowWidth"] = int(dcm_obj[WINDOW_WIDTH].value)
 
     # Pixel spacing attributes can contain two values packed like this:
     # x//y
