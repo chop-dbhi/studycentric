@@ -38,14 +38,16 @@ define(["jquery","underscore", "config"], function($, _, Config){
        },
        retrieveDicomAttributes: function(study,imgSource){
            if (timeout !== null){
-               clearTimeout(timeout)
+               clearTimeout(timeout);
            }
            $("body").trigger("null_dicom_attr");
            if (req !== null) req.abort();
            var that = this;
            timeout = setTimeout(function() {
               var o = that.queryString2Object(imgSource);
-              var url = (Config.StudyCentricHost ? ((Config.StudyCentricProt || "https") +  "://" + Config.StudyCentricHost + (Config.StudyCentricPort ? ":" + Config.StudyCentricPort:"") +"/") : "" ) + Config.StudyCentricPath +"object/"+o.objectUID+"?&seriesUID="+o.seriesUID+"&studyUID="+o.studyUID+"&callback=?";
+              var url = (Config.StudyCentricHost ? ((Config.StudyCentricProt || "https") +  "://" + Config.StudyCentricHost + (Config.StudyCentricPort ? ":" + Config.StudyCentricPort:"") +"/") : "" ) + Config.StudyCentricPath +"object/"+o.objectUID+"?&seriesUID="+o.seriesUID+"&studyUID="+o.studyUID;
+              if (Config.JSONP) 
+                  url += "&callback=?";
               req = $.getJSON(url, $.proxy(that.processDicomAttributes, that) ); 
            }, 500);
        }

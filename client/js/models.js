@@ -28,13 +28,16 @@ define(['jquery',
   var Series = Backbone.Model.extend({
       initialize: function(){
         var ref = this; 
+        var data = "json";
         this.instances = new ImageStack();
         // Store study and instance uid on collection so we can properly populate instance model
         this.instances.studyUID = this.get("studyUID");
         this.instances.seriesUID=this.get("uid"); 
         this.instances.url = (Config.StudyCentricHost ? ((Config.StudyCentricProt || "https") + "://" + Config.StudyCentricHost + (Config.StudyCentricPort ? ":"+Config.StudyCentricPort : "") + "/") : "" ) + Config.StudyCentricPath + "series/"+this.get("uid")+"?callback=?";
         var view = new Views.SeriesView({model:this}); 
-        this.instances.fetch();
+        if (Config.JSONP)
+            data = "jsonp"; 
+        this.instances.fetch({dataType:data});
     }
   });
 
@@ -54,11 +57,14 @@ define(['jquery',
 
   var Study = Backbone.Model.extend({
       initialize: function(){
+          var data = "json";
           this.series = new SeriesStack();
           // Stores study uid on collection so we can populate series model
           this.series.studyUID = this.get("uid");
           this.series.url = (Config.StudyCentricHost ? ((Config.StudyCentricProt || "https")+"://"+Config.StudyCentricHost + (Config.StudyCentricPort ? ":"+Config.StudyCentricPort : "") + "/") : "")  + Config.StudyCentricPath + "study/" + this.get("uid")+"?callback=?";
-          this.series.fetch();
+          if (Config.JSONP)
+              data = "jsonp";
+          this.series.fetch({dataType:data});
       }
   });
 

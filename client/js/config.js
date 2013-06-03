@@ -14,6 +14,7 @@ define({
     ImagesPerRow:3,
     DisableClinicalWarning:false,
     MeasurementPrecision:1,
+    JSONP: false,
     HoverColor: "#FFAA56",
     HintColor: "#FFFFFF",
     MeasurementColor: "#00FF00"
