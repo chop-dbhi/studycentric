@@ -3,7 +3,7 @@ define({
     StudyCentricProt:"http",
     StudyCentricHost:"localhost",
     StudyCentricPath:"",
-    StudyCentricPort:80,
+    StudyCentricPort:8000,
     WADOHost:"localhost",
     WADOPort:8080,
     WADOProt:"http",
@@ -13,5 +13,8 @@ define({
     DefaultImgSize:128,
     ImagesPerRow:3,
     DisableClinicalWarning:false,
-    MeasurementPrecision:1
+    MeasurementPrecision:1,
+    HoverColor: "#FFAA56",
+    HintColor: "#FFFFFF",
+    MeasurementColor: "#00FF00"
 });

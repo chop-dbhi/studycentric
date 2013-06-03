@@ -1,11 +1,4 @@
 define(["jquery", "config",  "libs/big.min" ], function(jQuery, Config,  Big){
-    
-    var YELLOW = "#E5E500";
-    var ORANGE = "#FFAA56";
-    var BLACK = "#000000";
-    var WHITE = "#FFFFFF";
-    var GREEN = "#00FF00";
-    
     // This class represents the length rulers the user draws on the screen to perform a distance measurement.
     // lightBox should be the Raphael-based svg object that this ruler resides on
     var ruler = function(lightBox, ratio, xHeaderSpacing, yHeaderSpacing){
@@ -110,13 +103,12 @@ define(["jquery", "config",  "libs/big.min" ], function(jQuery, Config,  Big){
             text.attr("font-weight", "normal");
             text.attr("font-style","normal");
     
-            //text.attr("stroke",BLACK);
             text.attr("stroke-width", 0.5);
             text.attr("font-family","courier");
-            text.attr("fill",GREEN);
+            text.attr("fill",Config.MeasurementColor);
             var textBox = text.getBBox();
             textBoundaryBox = lightBox.paper.rect(endPoint.x+textPlacement - textBox.width/2, endPoint.y-textBox.height/2, textBox.width, textBox.height);
-            textBoundaryBox.attr("fill", WHITE);
+            textBoundaryBox.attr("fill", Config.HintColor);
             textBoundaryBox.attr("opacity",0);
             var textSet = lightBox.paper.set();
             textSet.push(text);
@@ -139,11 +131,11 @@ define(["jquery", "config",  "libs/big.min" ], function(jQuery, Config,  Big){
             var endPath1 = "M"+a[0].x+" "+a[0].y+"L"+a[1].x+" "+a[1].y;
             var endPath2 = "M"+b[0].x+" "+b[0].y+"L"+b[1].x+" "+b[1].y;
             line = lightBox.paper.path(rulerPath);        
-            line.attr("stroke", GREEN);
+            line.attr("stroke", Config.MeasurementColor);
             end1 = lightBox.paper.path(endPath1);
-            end1.attr("stroke", GREEN);
+            end1.attr("stroke", Config.MeasurementColor);
             end2 = lightBox.paper.path(endPath2);
-            end2.attr("stroke", GREEN);
+            end2.attr("stroke", Config.MeasurementColor);
     
             // The line is very thin, but we need that for accuracy, however for useability, its needs to be easier to move and manipulate
             // This creates a bounding box around the middle of the line that acts as a proxy for the line on rollover and dragging
@@ -153,11 +145,11 @@ define(["jquery", "config",  "libs/big.min" ], function(jQuery, Config,  Big){
             b = solver(endPoint.x,endPoint.y,7,slope);
             boundingBox = lightBox.paper.path("M"+a[0].x+" "+a[0].y+"L"+a[1].x+" "+a[1].y+"L"+b[1].x+" "+b[1].y+"L"+b[0].x+ " "+b[0].y+"L"+a[0].x+" "+a[0].y);
             boundingBox.attr("opacity",0);
-            boundingBox.attr("stroke",WHITE);
-            boundingBox.attr("fill",WHITE);
+            boundingBox.attr("stroke",Config.HintColor);
+            boundingBox.attr("fill",Config.HintColor);
             boundingBox.toFront();
-            jQuery(boundingBox.node).hover(function(){line.attr('stroke',ORANGE);end1.attr('stroke',ORANGE);end2.attr('stroke',ORANGE);lightBox.moveCursorOn();},
-                                           function(){line.attr('stroke',GREEN);end1.attr('stroke',GREEN);end2.attr('stroke',GREEN);lightBox.moveCursorOff();});
+            jQuery(boundingBox.node).hover(function(){line.attr('stroke',Config.HoverColor);end1.attr('stroke',Config.HoverColor);end2.attr('stroke',Config.HoverColor);lightBox.moveCursorOn();},
+                                           function(){line.attr('stroke',Config.MeasurementColor);end1.attr('stroke',Config.MeasurementColor);end2.attr('stroke',Config.MeasurementColor);lightBox.moveCursorOff();});
     
             // Now bounding boxes for the rule marks
             var oppositeSlope = null;
@@ -173,17 +165,17 @@ define(["jquery", "config",  "libs/big.min" ], function(jQuery, Config,  Big){
             b = solver(end1EndPoint.x, end1EndPoint.y, 3, oppositeSlope);
             boundingBoxEnd1 = lightBox.paper.path("M"+a[0].x+" "+a[0].y+"L"+a[1].x+" "+a[1].y+"L"+b[1].x+" "+b[1].y+"L"+b[0].x+ " "+b[0].y+"L"+a[0].x+" "+a[0].y);
             boundingBoxEnd1.attr("opacity",0);
-            boundingBoxEnd1.attr("stroke",WHITE);
-            boundingBoxEnd1.attr("fill",WHITE);
-            jQuery(boundingBoxEnd1.node).hover(function(){end1.attr('stroke',ORANGE);}, function(){end1.attr('stroke',GREEN);});
+            boundingBoxEnd1.attr("stroke",Config.HintColor);
+            boundingBoxEnd1.attr("fill",Config.HintColor);
+            jQuery(boundingBoxEnd1.node).hover(function(){end1.attr('stroke',Config.HoverColor);}, function(){end1.attr('stroke',Config.MeasurementColor);});
     
             a = solver(end2BeginPoint.x, end2BeginPoint.y, 1, oppositeSlope);
             b = solver(end2EndPoint.x, end2EndPoint.y, 1, oppositeSlope);
             boundingBoxEnd2 = lightBox.paper.path("M"+a[0].x+" "+a[0].y+"L"+a[1].x+" "+a[1].y+"L"+b[1].x+" "+b[1].y+"L"+b[0].x+ " "+b[0].y+"L"+a[0].x+" "+a[0].y);
             boundingBoxEnd2.attr("opacity",0);
-            boundingBoxEnd2.attr("stroke",WHITE);
-            boundingBoxEnd2.attr("fill",WHITE);
-            jQuery(boundingBoxEnd2.node).hover(function(){end2.attr('stroke',ORANGE);}, function(){end2.attr('stroke',GREEN);});
+            boundingBoxEnd2.attr("stroke",Config.HintColor);
+            boundingBoxEnd2.attr("fill",Config.HintColor);
+            jQuery(boundingBoxEnd2.node).hover(function(){end2.attr('stroke',Config.HoverColor);}, function(){end2.attr('stroke',Config.MeasurementColor);});
     
     
             // Make the line draggable
@@ -239,7 +231,7 @@ define(["jquery", "config",  "libs/big.min" ], function(jQuery, Config,  Big){
                 var tracePath = "M "+(textLoc.x || text.attr('x')) + " " +(textLoc.y || text.attr("y")) + "L"+endPoint.x + " " + endPoint.y;
                 trace = lightBox.paper.path(tracePath);
                 trace.attr("stroke-width", 1);
-                trace.attr("stroke",WHITE);
+                trace.attr("stroke",Config.HintColor);
                 trace.attr("stroke-dasharray",['--']);
     
                 redraw();
@@ -323,7 +315,7 @@ define(["jquery", "config",  "libs/big.min" ], function(jQuery, Config,  Big){
         var adjust = function(point){
            clear();
            line = lightBox.paper.path("M"+startPoint.x+" "+startPoint.y+"L"+point.x+" "+point.y);
-           line.attr("stroke",GREEN);
+           line.attr("stroke",Config.MeasurementColor);
         };
         that.adjust = adjust;
     
