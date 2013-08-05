@@ -31,6 +31,9 @@ To view a study, navigate to the url where StudyCentric is installed and pass it
 
 ```http://yourinstitution.edu/studycentric/?studyUID=1.2.323.32.3.356 ```
 
+## Feedback
+All types of feedback is welcome. Please see the [google user group](https://groups.google.com/forum/#!forum/studycentric).
+
 ## Screenshot
 
 <center>
