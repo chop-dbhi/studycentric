@@ -164,7 +164,7 @@ Following the gdcm installation instructions should work fine, but this section 
 1. Create your python virtualenv and activate it. Making the root of the git repository your virutalenv root is probably the easiest.
 1. Make sure cmake and swig are installed.
 1. Download gdcm and unzip it. Rename the directory it unzips into to `gdcm`.
-1. Create a directory at the same level as the `gdcm` directory called `gdcbin` and descend into it.
+1. Create a directory at the same level as the `gdcm` directory called `gdcmbin` and descend into it.
 1. Run the following commands
    1. ccmake ../gdcm
         1. A configure app will open up. Make sure to turn on python wrappers and shared libraries. It's a little tricky, but just follow the instructions at the bottom of the screen.
