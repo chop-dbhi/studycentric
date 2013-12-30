@@ -235,3 +235,21 @@ The last six options affect the appearance of the client:
 * ImagesPerRow: This controls the number of images displayed per row in the right-hand side series preview drawer.
 * DisableClinicalWarning: This controls whether StudyCentric will prompt the user to agree that it is not to be used for clinical or diagnostic purposes. The default is false, so the user will be prompted each time they use the application. It is recommended that this default be used.
 * MeasurementPrecision: This determines the number of decimal places shown in in the distance measurements (in mm or pixels). It is very important to keep in mind that the measurement tool is not high quality and is not meant to be used for diagnosis. The appearance of images can change across different browsers because StudyCentric requests lossy jpegs from the PACS and interpolation algorithms vary. Care should be taken to not provide a false sense of accuracy by providing more precision than the data and image actually provides.
+
+# Troubleshooting
+## Python server
+* `No module named site found` when running ./run_server.sh
+
+ The cause of this is likely that you uwsgi config file is not pointing the correct location of your virtualenv. The `virtualenv` variable must point to the root of your python virtual environment.
+* run_server.sh says no app is found and the web browser says "Server error encountered"
+
+ The cause of this is likely that your uwsgi `chdir` variable is not pointing to the correct directory location. This must point to the directory that contains the file `wsgi.py`.
+
+## General issues
+* The page loads, but it is completely blank (no series images load along the left hand side).
+
+ Verify that your StudyCentricHost and your WADOHost variables in the client/js/config.js file are pointing to the correct respective servers. Also verify the associated Port variables.
+* The page loads fine, but when you choose a series from the left, the first image does not appear in the center pane
+ 
+ In `client/js/config.js` try changing `jsonp` to `true`. The is likely a CORS (Cross Origin Resource Sharing) issue, and this should fix it.
+
