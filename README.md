@@ -240,13 +240,13 @@ The last six options affect the appearance of the client:
 ## Python server
 * `No module named site found` when running ./run_server.sh
 
- The cause of this is likely that you uwsgi config file is not pointing the correct location of your virtualenv. The `virtualenv` variable must point to the root of your python virtual environment.
-* run_server.sh says no app is found and the web browser says "Server error encountered"
+ The cause of this is likely that your servers/uwsgi/local.ini file is not pointing the correct location of your python virtualenv. The `virtualenv` variable must point to the root of your python virtual environment.
+* run_server.sh says no app is found. The web browser shows a 'Server error encountered' message when you try to go to the app
 
  The cause of this is likely that your uwsgi `chdir` variable is not pointing to the correct directory location. This must point to the directory that contains the file `wsgi.py`.
 
 ## General issues
-* The page loads, but it is completely blank (no series images load along the left hand side).
+* The page loads, but it is completely blank (no series images load along the left hand side)
 
  Verify that your StudyCentricHost and your WADOHost variables in the client/js/config.js file are pointing to the correct respective servers. Also verify the associated Port variables.
 * The page loads fine, but when you choose a series from the left, the first image does not appear in the center pane
