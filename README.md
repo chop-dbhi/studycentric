@@ -251,5 +251,5 @@ The last six options affect the appearance of the client:
  Verify that your StudyCentricHost and your WADOHost variables in the client/js/config.js file are pointing to the correct respective servers. Also verify the associated Port variables.
 * The page loads fine, but when you choose a series from the left, the first image does not appear in the center pane
  
- In `client/js/config.js` try changing `jsonp` to `true`. The is likely a CORS (Cross Origin Resource Sharing) issue, and this should fix it.
+ In `client/js/config.js` try changing `JSONP` to `true`. The is likely a CORS (Cross Origin Resource Sharing) issue, and this should fix it.
 
