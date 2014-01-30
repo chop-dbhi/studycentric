@@ -17,6 +17,6 @@ define({
     JSONP: false,
     HoverColor: "#FFAA56",
     HintColor: "#FFFFFF",
-    MeasurementColor: "#00FF00"
+    MeasurementColor: "#00FF00",
     png:false
 });
