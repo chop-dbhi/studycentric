@@ -18,4 +18,5 @@ define({
     HoverColor: "#FFAA56",
     HintColor: "#FFFFFF",
     MeasurementColor: "#00FF00"
+    png:false
 });
