@@ -174,6 +174,10 @@ Following the gdcm installation instructions should work fine, but this section 
    1. gdcmswig.py
    1. _gdcmswig.so
 
+*Note* in the most recent version of GDCM we have tested (gdcm 2.4.4 with Swig-3.0.5) on REDHat I ran into two problems.
+   1.gdcmswig.py on line 19599 uses the reserved Python keyword "as" for a variable name. This needs to be changed to something else. Anything should do. It needs to be changed in the function body as well.
+   2. SegFault caused by code in the function System::GetLocaleCharset() in Source/Common/gdcmSystem.cxx. It has something to do with trying to set the locale. It's easy enough to cause that line of code to be skipped, but I assume there will be some downstream issues because of it. This needs to be examined more carefully and hopefully it was just an issue on one system.
+
 #### Requiring Authorization
 The original intention of StudyCentric was to make it a simple JavaScript/HTML only app that hits a simple web service only when absolutely required for browser limitations or performance reasons. If that is all you need, you can still do this. Simply run the service as is. Realistically, because of the nature of this type of application, you may have authorization requirements. You can accomplish this at the webserver level with something like http basic auth, but for a better user experience the python backend can be configured to require authentication. There is a setting for the python server that will essentially turn the app into a django app that requires the user to authenticate. Basically, instead of pointing users to the StudyCentric index.html static file, you point them to a url endpoint `app/` that will require authentication before showing anything. 
 ##### Enabling authorization
