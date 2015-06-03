@@ -204,10 +204,11 @@ require(['jquery',
         $(document).keydown(function(event){
             if (event.which in {39:1, 40:1}){
                animateSeries(undefined, 0);
+			   return false;
             } else if (event.which in {37:1, 38:1}){
                animateSeries(undefined, 1);
+        	   return false;
             }
-            return false;
         });
 
         $("#slider").slider({
