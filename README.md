@@ -219,13 +219,10 @@ define({
     DefaultImgSize:128,
     ImagesPerRow:3,
     DisableClinicalWarning:false,
-<<<<<<< HEAD
-    MeasurementPrecision:1
-=======
+    MeasurementPrecision:1,
     EnableReportConcern:false,
     ReportConcernUrl:"../concerns/",
     ReportConcernEmail:"Enter Email"
->>>>>>> origin/reportaconcern
 });
 ```
 This file must be configured properly to match your PACS server and StudyCentric Server configuration. Descriptions of each option are outlined below:
@@ -239,11 +236,9 @@ This file must be configured properly to match your PACS server and StudyCentric
 * WADOPath: The url path to your WADO server
 * WADOPort: The port of the WADO service (by default on DCM4CHEE this is 8080)
 
-<<<<<<< HEAD
-The last six options affect the appearance of the client:
-=======
+
 The next five options affect the appearance of the client:
->>>>>>> origin/reportaconcern
+
 * InstanceThumbNailSizePx: This controls the size of the image thumbnails that appear in the right-hand side series preview drawer.
 * SeriesThumbNailSizePx: This controls the thumbnail size for the Series thumbnails displayed on the left-hand side of the screen.
 * DefaultImgSize: This controls the default image size of the displayed image in the center of the screen.
