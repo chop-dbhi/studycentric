@@ -1,5 +1,0 @@
-dicom_server_host: localhost
-ae: DCM4CHEE
-dicom_server_port: 11112
-wado_server_host: localhost
-wado_server_port: 8080
