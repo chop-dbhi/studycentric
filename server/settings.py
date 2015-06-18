@@ -18,7 +18,7 @@ ROOT_URLCONF = 'server.urls'
 DATABASES = {
 'default': {
     'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': 'testdb'
+    'NAME': get_env_variable("DJANGO_DB_NAME", "database.db")
     }
 }
 
@@ -51,7 +51,14 @@ SC_DICOM_PORT = int(get_env_variable('DICOM_PORT', 11112))
 SC_WADO_SERVER = get_env_variable('SERVER_WADO_SERVER', False) or SC_DICOM_SERVER
 SC_WADO_PORT = int(get_env_variable('SERVER_WADO_PORT', 8080))
 SC_WADO_PATH = get_env_variable('SERVER_WADO_PATH', 'wado')
+SC_WADO_PROT = get_env_variable('SERVER_WADO_PROT', 'http')
 
 AET = get_env_variable('DICOM_AET', 'DCM4CHEE')
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
 
 from local_settings import *

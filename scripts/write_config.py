@@ -12,14 +12,11 @@ def get_env_variable(var_name, default=None):
         return default
 
 config = {
-    "StudyCentricProt":get_env_variable("STUDYCENTRIC_PROT","http"),
-    "StudyCentricHost":get_env_variable("STUDYCENTRIC_HOST", "localhost"), 
-    "StudyCentricPath":get_env_variable("STUDYCENTRIC_PATH", ""),
-    "StudyCentricPort":get_env_variable("STUDYCENTRIC_POST", 8000),
-    "WADOHost":get_env_variable("CLIENT_WADO_HOST") or get_env_variable('SERVER_WADO_SERVER') or get_env_variable("DICOM_SERVER", "localhost"),
-    "WADOPort":get_env_variable("CLIENT_WADO_PORT") or get_env_variable('SERVER_WADO_PORT', 8080),
-    "WADOProt":get_env_variable("CLIENT_WADO_PROT") or get_env_variable('SERVER_WADO_PROT', 'http'),
-    "WADOPath":get_env_variable("CLIENT_WADO_PATH") or get_env_variable('SERVER_WADO_PATH', 'wado'),
+    "StudyCentricPath":get_env_variable("STUDYCENTRIC_PATH", "../"),
+    "WADOHost":get_env_variable("CLIENT_WADO_HOST") or get_env_variable('WADO_SERVER') or get_env_variable("DICOM_SERVER", "localhost"),
+    "WADOPort":get_env_variable("CLIENT_WADO_PORT") or get_env_variable('WADO_PORT', 8080),
+    "WADOProt":get_env_variable("CLIENT_WADO_PROT") or get_env_variable('WADO_PROT', 'http'),
+    "WADOPath":get_env_variable("CLIENT_WADO_PATH") or get_env_variable('WADO_PATH', 'wado'),
     "InstanceThumbNailSizePx":get_env_variable("INSTANCE_THUMBNAIL_SIZE_PX", 100),
     "SeriesThumbNailSizePx":get_env_variable("SERIES_THUMBNAIL_SIZE_PX", 150),
     "DefaultImgSize":get_env_variable("DEFAULT_IMG_SIZE", 128),

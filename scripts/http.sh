@@ -3,6 +3,11 @@
 APP_DIR=/opt/app/
 cd $APP_DIR
 
+if [ "$LOGIN_ENABLED" = "1" ]; then
+    DJANGO_SETTINGS_MODULE='server.settings' django-admin.py syncdb
+#    DJANGO_SETTINGS_MODULE='server.settings' django-admin.py createcachetable
+fi
+
 # Write the config file that the JS client requires
 python /opt/app/scripts/write_config.py
 

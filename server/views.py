@@ -27,8 +27,7 @@ WINDOW_WIDTH =  (0x28, 0x1051)
 CALIBRATION_TYPE =  (0x28,0x402)
 CALIBRATION_DESCR = (0x28,0x404)
 
-#TODO make protocol configurable
-WADO_URL = "http://%s:%d/%s" % (settings.SC_WADO_SERVER, settings.SC_WADO_PORT, 
+WADO_URL = "%s://%s:%d/%s" % (settings.SC_WADO_PROT, settings.SC_WADO_SERVER, settings.SC_WADO_PORT, 
             settings.SC_WADO_PATH)
 
 def app_root(request):
