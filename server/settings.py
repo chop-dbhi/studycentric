@@ -13,7 +13,7 @@ def get_env_variable(var_name, default=None):
 SECRET_KEY = get_env_variable("SECRET_KEY", "REPLACE_WITH_REAL_SECRET_KEY")
 LOGIN_ENABLED = get_env_variable("LOGIN_ENABLED", False)
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'server.urls'
 
 DATABASES = {
 'default': {
@@ -22,7 +22,7 @@ DATABASES = {
     }
 }
 
-DEBUG = get_env_variable('DJANGO_DEBUG', False)
+DEBUG = bool(get_env_variable('DJANGO_DEBUG', False))
 INSTALLED_APPS = ('server',)
 
 FORCE_SCRIPT_NAME = get_env_variable('FORCE_SCRIPT_NAME', '')
