@@ -11,7 +11,7 @@ def get_env_variable(var_name, default=None):
 
 
 SECRET_KEY = get_env_variable("SECRET_KEY", "REPLACE_WITH_REAL_SECRET_KEY")
-LOGIN_ENABLED = get_env_variable("LOGIN_ENABLED", False)
+LOGIN_ENABLED = bool(int(get_env_variable("LOGIN_ENABLED", False)))
 
 ROOT_URLCONF = 'server.urls'
 
@@ -46,11 +46,12 @@ if LOGIN_ENABLED:
     TEMPLATE_DIRS = (STATIC_ROOT,)
 
 SC_DICOM_SERVER = get_env_variable('DICOM_SERVER', 'localhost')
-SC_DICOM_PORT = get_env_variable('DICOM_PORT', 11112)
+SC_DICOM_PORT = int(get_env_variable('DICOM_PORT', 11112))
 
-SC_WADO_SERVER = get_env_variable('WADO_SERVER', False) or SC_DICOM_SERVER
-SC_WADO_PORT = get_env_variable('WADO_PORT', 8080)
-SC_WADO_PATH = get_env_variable('WADO_PATH', 'wado')
+SC_WADO_SERVER = get_env_variable('SERVER_WADO_SERVER', False) or SC_DICOM_SERVER
+SC_WADO_PORT = int(get_env_variable('SERVER_WADO_PORT', 8080))
+SC_WADO_PATH = get_env_variable('SERVER_WADO_PATH', 'wado')
+
 AET = get_env_variable('DICOM_AET', 'DCM4CHEE')
 
 from local_settings import *

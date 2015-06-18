@@ -27,6 +27,7 @@ WINDOW_WIDTH =  (0x28, 0x1051)
 CALIBRATION_TYPE =  (0x28,0x402)
 CALIBRATION_DESCR = (0x28,0x404)
 
+#TODO make protocol configurable
 WADO_URL = "http://%s:%d/%s" % (settings.SC_WADO_SERVER, settings.SC_WADO_PORT, 
             settings.SC_WADO_PATH)
 
