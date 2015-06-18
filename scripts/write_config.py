@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # This script creates a static JavaScript configuration module the StudyCentric client uses
 import json
@@ -37,8 +37,8 @@ config = {
     ReportConcernEmail: get_env_variable("REPORT_CONCERN_EMAIL", "Enter Email")
 }
 
-output = "define({});".format(json.dumps(config))
+output = "define(%s);" % json.dumps(config)
 
-f = open('/opt/app/client/js/config.js', 'w')
+f = open("/opt/app/client/js/config.js", "w")
 f.write(output)
 f.close()
