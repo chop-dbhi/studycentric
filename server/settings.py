@@ -7,12 +7,10 @@ def get_env_variable(var_name, default=None):
         return os.environ[var_name]
     except KeyError:
         error_msg = "Set the %s environment variable" % var_name
-        if default is None:
-            raise ImproperlyConfigured(error_msg)
-        else return default
+        return default
 
 
-SECRET_KEY = get_env_variable("SECRET_KEY, ""REPLACE_WITH_REAL_SECRET_KEY")
+SECRET_KEY = get_env_variable("SECRET_KEY", "REPLACE_WITH_REAL_SECRET_KEY")
 LOGIN_ENABLED = get_env_variable("LOGIN_ENABLED", False)
 
 ROOT_URLCONF = 'urls'
@@ -50,7 +48,7 @@ if LOGIN_ENABLED:
 SC_DICOM_SERVER = get_env_variable('DICOM_SERVER', 'localhost')
 SC_DICOM_PORT = get_env_variable('DICOM_PORT', 11112)
 
-SC_WADO_SERVER = get_env_variable('WADO_SERVER', 'localhost')
+SC_WADO_SERVER = get_env_variable('WADO_SERVER', False) or SC_DICOM_SERVER
 SC_WADO_PORT = get_env_variable('WADO_PORT', 8080)
 SC_WADO_PATH = get_env_variable('WADO_PATH', 'wado')
 AET = get_env_variable('DICOM_AET', 'DCM4CHEE')
