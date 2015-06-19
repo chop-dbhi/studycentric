@@ -31,7 +31,6 @@ RUN pip install "Django==1.5"
 RUN pip install "requests"
 RUN pip install "pydicom"
 RUN pip install "uWSGI"
-RUN pip install "etcd"
 
 ADD . /opt/app
 

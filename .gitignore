@@ -35,3 +35,4 @@ _site/static
 _site/media
 env_vars_chop
 env_var_chop
+build.sh
