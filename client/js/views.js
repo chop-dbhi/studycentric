@@ -19,7 +19,7 @@ define(["jquery",
 
       render: function() {
         $(this.el).html(this.template({
-            wado_url: (Config.WADOHost ? ((Config.WADOProt || "https") + "://" + Config.WADOHost+(Config.WADOPort ? ":"+Config.WADOPort : "") +"/"): "" )
+            wado_url: (Config.WADOHost === '/' ? '/' : (Config.WADOHost ? ((Config.WADOProt || "https") + "://" + Config.WADOHost+(Config.WADOPort ? ":"+Config.WADOPort : "") +"/"): "" ))
             + Config.WADOPath + "?" + (Config.png ? "contentType=image%2Fpng&":"contentType=image%2Fjpeg&") + "requestType=WADO&studyUID="+this.model.get("studyUID")+"&"
             + "seriesUID="+this.model.get("uid") + "&" + "objectUID=" + this.model.instances.at(0).get("uid")
             + "&rows=100",
@@ -138,7 +138,7 @@ define(["jquery",
         render: function(){
             $("#instances tbody").append(this.el);
             var index = $.inArray(this.model, this.model.collection.models);
-            $(this.el).html(this.template({wado_url:(Config.WADOHost ? ((Config.WADOProt || "https") + "://" + Config.WADOHost+ (Config.WADOPort ? ":"+Config.WADOPort: "")  +"/") : "" )
+            $(this.el).html(this.template({wado_url:(Config.WADOHost === '/' ? '/' : (Config.WADOHost ? ((Config.WADOProt || "https") + "://" + Config.WADOHost+ (Config.WADOPort ? ":"+Config.WADOPort: "")  +"/") : "" ))
             + Config.WADOPath + "?"+(Config.png ? "contentType=image%2Fpng&":"contentType=image%2Fjpeg&")+ "requestType=WADO&studyUID="+this.model.get("studyUID")+"&"
             + "seriesUID="+this.model.get("seriesUID") + "&" + "objectUID=" + this.model.get("uid")
             + "&rows="+Config.DefaultImgSize,
