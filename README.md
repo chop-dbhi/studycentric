@@ -104,9 +104,9 @@ The following environment variables will allow you to configure StudyCentric. Wh
     The following variables are available in the event that you need to force your client to make WADO requests (which is how it obtains the actual images it displays) to a different PACS then specified above. This would only happen in a situation where the network you are serving StudyCentric to does not have direct access to your PACS and it needs to go through some sort of proxy. See the [Your PACS](#your-pacs) section for more details. If your client can talk directly to your PACS you can ignore these variables completely.
 
     CLIENT_WADO_HOST: WADO host you want your client to talk to.
-    CLIENT_WADO_PORT: Port the WADO service is running on CLIENT_WADO_HOST
+    CLIENT_WADO_PORT: Port the WADO service is running on 
     CLIENT_WADO_PROT: Protocol the WADO service is using (http or https)
-    CLIENT_WADO_PATH: Path to the WADO service on CLIENT_WADO_HOST
+    CLIENT_WADO_PATH: Path to the WADO service on 
     
     ##### Report a Concern Feature
     
