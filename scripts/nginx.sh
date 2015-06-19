@@ -4,8 +4,10 @@ APP_DIR=/opt/app/
 cd $APP_DIR
 
 if [ "$LOGIN_ENABLED" = "1" ]; then
-    DJANGO_SETTINGS_MODULE='server.settings' django-admin.py syncdb
-#    DJANGO_SETTINGS_MODULE='server.settings' django-admin.py createcachetable
+    DJANGO_SETTINGS_MODULE='server.settings' django-admin.py syncdb --noinput
+    if [ -z "$DJANGO_ADMIN_USER" ] && [ -z "$DJANGO_ADMIN_EMAIL" ] && [-z "$DJANGO_ADMIN_PASSWORD"]; then 
+        echo "from django.contrib.auth.models import User; User.objects.create_superuser('"$DJANGO_ADMIN_USER"', '"$DJANGO_ADMIN_EMAIL"', '"$DJANGO_ADMIN_PASSWORD"')" | DJANGO_SETTINGS_MODULE='server.settings' django-admin.py shell
+    fi
 fi
 
 # Write the config file that the JS client requires
