@@ -21,7 +21,7 @@ THIS SOFTWARE IS NOT INTENDED FOR PRIMARY DIAGNOSTIC, ONLY FOR SCIENTIFIC USAGE.
 
 StudyCentric is web-based DICOM image viewer for use with research applications. The application communicates with a DICOM PACS via the DICOM protocol (both standard DICOM C-FIND queries and via [WADO](http://medical.nema.org/dicom/2004/04_18PU.PDF)). A REST service implemented in Django speaks DICOM to your PACS and exposes necessary queries to the JavaScript client. The rest of application runs entirely in the web browser using JavaScript/HTML. 
 
-StudyCentric not a full PACS viewer, it is meant to be deployed within a larger application to view specific DICOM studies. It contains no patient or image search functionality. The expected workflow would be that an external system provides links to StudyCentric that specify the Study UID it should display, like below:
+StudyCentric is not a full PACS viewer, it is meant to be deployed within a larger application to view specific DICOM studies. It contains no patient or image search functionality. The expected workflow would be that an external system provides links to StudyCentric that specify the Study UID it should display, like below:
 
 ```http://yourinstitution.edu/studycentric/?studyUID=1.2.323.32.3.356 ```
 
