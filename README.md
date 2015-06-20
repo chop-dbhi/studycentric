@@ -23,7 +23,7 @@ StudyCentric is web-based DICOM image viewer for use with research applications.
 
 StudyCentric is not a full PACS viewer, it is meant to be deployed within a larger application to view specific DICOM studies. It contains no patient or image search functionality. The expected workflow would be that an external system provides links to StudyCentric that specify the Study UID it should display, like below:
 
-```http://yourinstitution.edu/studycentric/?studyUID=1.2.323.32.3.356 ```
+```http://yourinstitution.edu/studycentric/index.html?studyUID=1.2.323.32.3.356```
 
 ## Feedback
 All types of feedback are welcome. Please see the [google user group](https://groups.google.com/forum/#!forum/studycentric).
