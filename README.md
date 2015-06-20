@@ -49,7 +49,7 @@ StudyCentric currently only supports single frame DICOM files. There is not mult
 There used to be server implementations in both Ruby and Python. Support for Ruby has been dropped in favor of making the whole app available as a Docker image.
 
 
-You can require that users authenticate before using the application. This uses Django's auth functionality. See [requiring authentiaton](#requiring-authentication) below.
+You can require that users authenticate before using the application. This uses Django's auth functionality. See [requiring authenticaton](#requiring-authentication) below.
 
 ## Your PACS
 This is a bit beyond the scope of this README but you will need to store your images in a DICOM compatible [PACS](http://en.wikipedia.org/wiki/Picture_archiving_and_communication_system) that supports [WADO](http://medical.nema.org/dicom/2004/04_18PU.PDF).  All of our internal instances use the open source [DCM4CHEE](http://www.dcm4che.org/confluence/display/ee2/Home) PACS.
@@ -83,7 +83,7 @@ The following environment variables will allow you to configure StudyCentric. Wh
     WADO_PROT: This is the protocol your WADO service is running on (http or https). Defaults to http.
     DICOM_AET: The AET of your PACS. Defaults to DCM4CHEE.
 
-    LOGIN_ENABLED: Enable Django authorization. See the Require Authorization section below. Defaults to 0 for false.
+    LOGIN_ENABLED: Enable Django authenticatoin. See the [Requiring Authentication](#requiring-authentication) section below. Defaults to 0 for false.
     DJANGO_DB_NAME: Set the name of the sqlite database Django will use if you set LOGIN_ENABLED to 1. Defaults to "database.db".
     DJANGO_ADMIN_USER: Set Django admin superuser name.
     DJANGO_ADMIN_EMAIL: Set Django admin superuser email.
@@ -133,13 +133,13 @@ Once the configuration is set, you can run the image as follows. This assumes th
 The server should be available at `http://yourdockerhost:8000/static/index.html?studyUID=<Enter a valid DICOM study uid>` unless you turned on `LOGIN_ENABLED` in which case it will be `http://yourdockerhost:8000/app/?studyUID=<Enter a valid DICOM study uid>`. Read the next section for more details on this feature.
 
 #### Requiring Authentication
-The original intention of StudyCentric was to make it a simple JavaScript/HTML only app that hits a simple web service only when absolutely required for browser limitations or performance reasons. If that is all you need, you can still do this. Simply run the service as is. Realistically, because of the nature of this type of application, you may have authorization requirements. You can accomplish this at the webserver level with something like http basic auth, but for a better user experience the server can be configured to require authentication. If the `LOGIN_ENABLED` environement variable is set to 1, it will essentially turn the app into a Django app that requires the user to authenticate. Basically, instead of pointing users to the StudyCentric index.html static file, you point them to the url endpoint `app/` that will require authentication before showing anything. 
+The original intention of StudyCentric was to make it a simple JavaScript/HTML only app that hits a simple web service only when absolutely required for browser limitations or performance reasons. If that is all you need, you can still do this. Simply run the service as is. Realistically, because of the nature of this type of application, you may have authentication requirements. You can accomplish this at the webserver level with something like http basic auth, but for a better user experience the server can be configured to require authentication. If the `LOGIN_ENABLED` environement variable is set to 1, it will essentially turn the app into a Django app that requires the user to authenticate. Basically, instead of pointing users to the StudyCentric index.html static file, you point them to the url endpoint `app/` that will require authentication before showing anything. 
 
 ##### Enabling authentication
 As this turns the project into a more complex django application, this may require some knowledge of django, but this guide will try to walk through all the steps.
 
 1. Set the `LOGIN_ENABLED` environment variable to 1. 
-1. You need a Django database backend to hold the authorization and session information (this is required by Django when you use its authorization features). By default, StudyCentric will create a sqlite database (the location and name of which you can control with the `DJANGO_DB_NAME` environment variable), but you can change this by using docker to mount a local_settings.py file into /opt/app/server/ with the proper Django server settings. You can also use this method to add any middleware or custom authentication backends you might need. The login screen is pretty barebones- you can override it by mounting a custom template to `/opt/server/templates/registration/login.html`.  If you want to create a superuser for your Django database, you must set the `DJANGO_ADMIN_USER`, `DJANGO_ADMIN_EMAIL` and (optionally, depending on whether you have a custom authorization backend) `DJANGO_ADMIN_PASSWORD` environment variables. If you do not, no super user will be created, and if you have not set up a custom authentication backend you will not be able to login.
+1. You need a Django database backend to hold the authentication and session information (this is required by Django when you use its authentication features). By default, StudyCentric will create a sqlite database (the location and name of which you can control with the `DJANGO_DB_NAME` environment variable), but you can change this by using docker to mount a local_settings.py file into /opt/app/server/ with the proper Django server settings. You can also use this method to add any middleware or custom authentication backends you might need. The login screen is pretty barebones- you can override it by mounting a custom template to `/opt/server/templates/registration/login.html`.  If you want to create a superuser for your Django database, you must set the `DJANGO_ADMIN_USER`, `DJANGO_ADMIN_EMAIL` and (optionally, depending on whether you have a custom authentication backend) `DJANGO_ADMIN_PASSWORD` environment variables. If you do not, no super user will be created, and if you have not set up a custom authentication backend you will not be able to login.
 
 # Troubleshooting
 
