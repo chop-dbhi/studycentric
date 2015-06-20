@@ -116,14 +116,14 @@ The following variables are available in the event that you need to force your c
     
 The last three options affect an optional "Report a Concern" feature. This is meant to help screen studies for potential Protected Health Information(PHI). If `ENABLE_REPORT_CONCERN` is set to 1, this places a button at the top of the screen labeled "Report a Concern". If the user clicks the button while viewing a study it will POST a JSON object to the `REPORT_CONCERN_URL` to inform you that something in the study requires attention. *Please note that the HTTP service receiving this POST is not part of StudyCentric, you would need to provide it.* The feature is intended for use when StudyCentric is part of a larger PHI screening application. The `REPORT_CONCERN_EMAIL ` is displayed to the user in a message asking them to e-mail the study information only if the POST fails.
 
-    The JSON object sent is as follows:
+The JSON object sent is as follows:
 
-    ```javascript
+``` javascript
     {
       document: <HTML document containing a link to the study and the image the user was viewing>,
       comment: <Comment entered by the user when they clicked the report button>    
     }
-    ```
+```
 
 ### Running
 Once the configuration is set, you can run the image as follows. This assumes that you have put all of the necessary variables above into a docker environment variable file called `env_vars` and want to expose the service on port 8000 of your docker host.
