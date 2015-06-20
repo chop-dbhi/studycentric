@@ -23,7 +23,7 @@ StudyCentric is web-based DICOM image viewer for use with research applications.
 
 StudyCentric is not a full PACS viewer, it is meant to be deployed within a larger application to view specific DICOM studies. It contains no patient or image search functionality. The expected workflow would be that an external system provides links to StudyCentric that specify the Study UID it should display, like below:
 
-   http://yourinstitution.edu/studycentric/index.html?studyUID=1.2.323.32.3.356
+`http://yourinstitution.edu/studycentric/index.html?studyUID=1.2.323.32.3.356`
 
 ## Feedback
 All types of feedback are welcome. Please see the [google user group](https://groups.google.com/forum/#!forum/studycentric).
@@ -101,20 +101,20 @@ The following environment variables will allow you to configure StudyCentric. Wh
     MEAUREMENT_COLOR: Change the default color of measurements. Defaults to #00FF00.
     PNG: Request lossless pngs from your WADO server instead of JPEGs. Defaults to false.
     
-    The following variables are available in the event that you need to force your client to make WADO requests (which is how it obtains the actual images it displays) to a different PACS then specified above. This would only happen in a situation where the network you are serving StudyCentric to does not have direct access to your PACS and it needs to go through some sort of proxy. See the [Your PACS](#your-pacs) section for more details. If your client can talk directly to your PACS you can ignore these variables completely.
+The following variables are available in the event that you need to force your client to make WADO requests (which is how it obtains the actual images it displays) to a different PACS then specified above. This would only happen in a situation where the network you are serving StudyCentric to does not have direct access to your PACS and it needs to go through some sort of proxy. See the [Your PACS](#your-pacs) section for more details. If your client can talk directly to your PACS you can ignore these variables completely.
 
     CLIENT_WADO_HOST: WADO host you want your client to talk to.
     CLIENT_WADO_PORT: Port the WADO service is running on 
     CLIENT_WADO_PROT: Protocol the WADO service is using (http or https)
     CLIENT_WADO_PATH: Path to the WADO service on 
     
-    ##### Report a Concern Feature
+##### Report a Concern Feature
     
     ENABLE_REPORT_CONCERN
     REPORT_CONCERN_URL
     REPORT_CONCERN_EMAIL
     
-    The last three options affect an optional "Report a Concern" feature. This is meant to help screen studies for potential Protected Health Information(PHI). If `ENABLE_REPORT_CONCERN` is set to 1, this places a button at the top of the screen labeled "Report a Concern". If the user clicks the button while viewing a study it will POST a JSON object to the `REPORT_CONCERN_URL` to inform you that something in the study requires attention. *Please note that the HTTP service receiving this POST is not part of StudyCentric, you would need to provide it.* The feature is intended for use when StudyCentric is part of a larger PHI screening application. The `REPORT_CONCERN_EMAIL ` is displayed to the user in a message asking them to e-mail the study information only if the POST fails.
+The last three options affect an optional "Report a Concern" feature. This is meant to help screen studies for potential Protected Health Information(PHI). If `ENABLE_REPORT_CONCERN` is set to 1, this places a button at the top of the screen labeled "Report a Concern". If the user clicks the button while viewing a study it will POST a JSON object to the `REPORT_CONCERN_URL` to inform you that something in the study requires attention. *Please note that the HTTP service receiving this POST is not part of StudyCentric, you would need to provide it.* The feature is intended for use when StudyCentric is part of a larger PHI screening application. The `REPORT_CONCERN_EMAIL ` is displayed to the user in a message asking them to e-mail the study information only if the POST fails.
 
     The JSON object sent is as follows:
 
