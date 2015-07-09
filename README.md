@@ -64,6 +64,13 @@ his at your own risk). You can use this by configuring the client's WADO server 
 ## Running with Docker
 
 The easiest way to get the app up and running is to use Docker. This README will cover deployment with docker only. If you want to deploy the app yourself, there are instructions in this repo's wiki.
+### Get the docker image
+
+There is a pre-built docker image in the docker hub, just run:
+
+    docker pull dbhi/studycentric
+    
+If you prefer to build the image yourself, see the next section.
 
 ### Building the docker image
 
