@@ -60,5 +60,7 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
-
-from local_settings import *
+try:
+    from local_settings import *
+except ImportError:
+    pass
