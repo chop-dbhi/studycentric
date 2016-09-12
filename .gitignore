@@ -36,3 +36,4 @@ _site/media
 env_vars_chop
 env_var_chop
 build.sh
+env_vars*
