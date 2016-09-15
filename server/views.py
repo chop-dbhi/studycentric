@@ -53,7 +53,7 @@ def study(request, study_iuid):
     response["description"] = study['MainDicomTags']['StudyDescription']
    
     series_ids = study['Series']
-    series = requests.get("%s%s/series" % (ORTHANC_URL, study_locator['PATH']), 
+    series = requests.get("%s%s/series" % (ORTHANC_URL, study_locator['Path']), 
         auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD)).json()
 
     response["series"] =  [{"description":s['MainDicomTags']['SeriesDescription'],
