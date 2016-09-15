@@ -103,7 +103,9 @@ def calibrationDetails(dcm_obj):
 # Proxy to WADO server that only allows jpeg or png
 def wado(request):
     if request.GET.has_key('contentType') and (request.GET['contentType'] == 'image/jpeg' or request.GET['contentType'] == 'image/png'):
-          r = requests.get(WADO_URL, params=request.GET)
+          r = requests.get(WADO_URL, params=request.GET,  
+          auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD) )
+        
           data = r.content
           return HttpResponse(data, content_type=request.GET['contentType'])
     return Http404
@@ -117,7 +119,7 @@ def instance(request, instance_uid):
                'requestType':'WADO',
                'transferSyntax':'1.2.840.10008.1.2.2'} # explicit big endian
     # explicit little endian is  '1.2.840.10008.1.2.1'
-    r = requests.get(WADO_URL, params=payload)
+    r = requests.get(WADO_URL, params=payload, auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD))
     data = r.content
     file_like = cStringIO.StringIO(data)
     dcm_obj = dicom.read_file(file_like)
