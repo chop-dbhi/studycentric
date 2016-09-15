@@ -46,7 +46,7 @@ def get_orthanc(dicom_id):
 def study(request, study_iuid):
     study_locator = get_orthanc(study_iuid)
     
-    study = requests.get("%s%s" % (ORTHANC_URL, study_locator['PATH']), 
+    study = requests.get("%s%s" % (ORTHANC_URL, study_locator['Path']), 
         auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD)).json()
 
     response["description"] = study['MainDicomTags']['StudyDescription']
@@ -70,7 +70,7 @@ def series(request, series_iuid):
 
     series_locator = get_orthanc(series_iuid)
 
-    instances = requests.get("%s%s/series/instances" % (ORTHANC_URL, series_locator['PATH']),
+    instances = requests.get("%s%s/series/instances" % (ORTHANC_URL, series_locator['Path']),
         auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD)).json()
 
     response = [i["MainDicomTags"]["SOPInstanceUID"] for i in instances]
