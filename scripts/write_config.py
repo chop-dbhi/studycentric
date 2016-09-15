@@ -22,7 +22,7 @@ config = {
     "DefaultImgSize":get_env_variable("DEFAULT_IMG_SIZE", 128),
     "ImagesPerRow":get_env_variable("IMAGES_PER_ROW", 3),
     "DisableClinicalWarning":bool(int(get_env_variable("DISABLE_CLINICAL_WARNING", False))),
-    "MeasurementPrecision":get_env_variable("MEASUREMENT_PRECISION", 1),
+    "MeasurementPrecision":int(get_env_variable("MEASUREMENT_PRECISION", 1)),
     "JSONP": bool(int(get_env_variable("JSONP", True))),
     "HoverColor": get_env_variable("HOVER_COLOR","#FFAA56"),
     "HintColor": get_env_variable("HINT_COLOR", "#FFFFFF"),
