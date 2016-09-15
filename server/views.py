@@ -44,6 +44,7 @@ def get_orthanc(dicom_id):
     return response.json()[0]
 
 def study(request, study_iuid):
+    response = {}
     study_locator = get_orthanc(study_iuid)
     
     study = requests.get("%s%s" % (ORTHANC_URL, study_locator['Path']), 
