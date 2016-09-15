@@ -3,9 +3,9 @@ from django.http import HttpResponse, Http404
 from django.template.loader import get_template
 from django.template import Context
 from django.conf import settings
+from requests.auth import HTTPBasicAuth
 import cStringIO
 import requests
-import gdcm
 import json
 import dicom
 
@@ -30,59 +30,34 @@ CALIBRATION_DESCR = (0x28,0x404)
 WADO_URL = "%s://%s:%d/%s" % (settings.SC_WADO_PROT, settings.SC_WADO_SERVER, settings.SC_WADO_PORT, 
             settings.SC_WADO_PATH)
 
+ORTHANC_URL = "%s://%s:%d" % (settings.SC_WADO_PROT, settings.SC_WADO_SERVER, settings.SC_WADO_PORT)
+
 def app_root(request):
     document_template = get_template("index.html")
     document = document_template.render(Context({}))
     document = document.replace('var STATIC_URL = "";','var STATIC_URL = "%s";' % settings.STATIC_URL)
     return HttpResponse(document)
 
+def get_orthanc(dicom_id):
+    response=requests.post("%s/tools/lookup/" % ORTHANC_URL, data=dicom_id, 
+       auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD))
+    return response.json()[0]
+
 def study(request, study_iuid):
-    # Patient Name
-    response = {}
-    study_iuid_tag = gdcm.Tag(0x20,0xD)
-    study_iuid_element = gdcm.DataElement(study_iuid_tag)
-    study_descr_tag = gdcm.Tag(0x8,0x1030)
-    study_descr_element = gdcm.DataElement(study_descr_tag)
-    study_iuid_element.SetByteValue(str(study_iuid), gdcm.VL(len(study_iuid)))
-    ds = gdcm.DataSet()
-    ds.Insert(study_iuid_element)
-    ds.Insert(study_descr_element)
-    cnf = gdcm.CompositeNetworkFunctions()
-    theQuery = cnf.ConstructQuery(gdcm.eStudyRootType, gdcm.eStudy, ds)
-
-    # prepare the variable for output
-    ret = gdcm.DataSetArrayType()
-    # Execute the C-FIND query
-    cnf.CFind(settings.SC_DICOM_SERVER, settings.SC_DICOM_PORT,
-            theQuery, ret, 'GDCM_PYTHON', settings.AET)
-
-    response["description"] = str(ret[0].GetDataElement(study_descr_tag).GetValue())
+    study_locator = get_orthanc(study_iuid)
     
-    ds = gdcm.DataSet()
-    
-    series_descr_tag = gdcm.Tag(0x8,0x103E)
-    series_descr_element = gdcm.DataElement(series_descr_tag)
-    series_iuid_tag = gdcm.Tag(0x20,0xE)
-    series_iuid_element =  gdcm.DataElement(series_iuid_tag)
-    series_number_tag = gdcm.Tag(0x20,0x11)
-    series_number_element = gdcm.DataElement(series_number_tag)
-    
-    ds.Insert(study_iuid_element)
-    ds.Insert(series_descr_element)
-    ds.Insert(series_iuid_element)
-    ds.Insert(series_number_element)
+    study = requests.get("%s%s" % (ORTHANC_URL, study_locator['PATH']), 
+        auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD)).json()
 
-    series_query = cnf.ConstructQuery(gdcm.eStudyRootType, gdcm.eSeries, ds)
-    ret = gdcm.DataSetArrayType()
-    cnf.CFind(settings.SC_DICOM_SERVER, settings.SC_DICOM_PORT, series_query,
-            ret, 'GDCM_PYTHON', settings.AET)
+    response["description"] = study['MainDicomTags']['StudyDescription']
+   
+    series_ids = study['Series']
+    series = requests.get("%s%s/series" % (ORTHANC_URL, study_locator['PATH']), 
+        auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD)).json()
 
-    sorted_ret = sorted(ret, key = lambda x: int(str(x.GetDataElement(series_number_tag).GetValue())))
+    response["series"] =  [{"description":s['MainDicomTags']['SeriesDescription'],
+        "uid": s['MainDicomTags']['SeriesInstanceUID']} for s in series]
 
-    response["series"] =  [{"description":str(x.GetDataElement(series_descr_tag).GetValue()),
-        "uid": str(x.GetDataElement(series_iuid_tag).GetValue())} for x in sorted_ret]
-
-    
     json_response = json.dumps(response)
     
     if request.GET.has_key('callback'):
@@ -93,28 +68,12 @@ def study(request, study_iuid):
 
 def series(request, series_iuid):
 
-    series_iuid_tag = gdcm.Tag(0x20,0xE)
-    series_iuid_element =  gdcm.DataElement(series_iuid_tag)
-    series_iuid_element.SetByteValue(str(series_iuid), gdcm.VL(len(series_iuid)))
-    instance_uid_tag = gdcm.Tag(0x8, 0x18)
-    instance_uid_element = gdcm.DataElement(instance_uid_tag)
-    instance_number_tag = gdcm.Tag(0x20,0x13)
-    instance_number_element = gdcm.DataElement(instance_number_tag)
+    series_locator = get_orthanc(series_iuid)
 
-    ds = gdcm.DataSet()
-    ds.Insert(series_iuid_element)
-    ds.Insert(instance_uid_element)
-    ds.Insert(instance_number_element)
+    instances = requests.get("%s%s/series/instances" % (ORTHANC_URL, series_locator['PATH']),
+        auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD)).json()
 
-    cnf = gdcm.CompositeNetworkFunctions()
-
-    instance_query = cnf.ConstructQuery(gdcm.eStudyRootType, gdcm.eImage, ds)
-    ret = gdcm.DataSetArrayType()
-    cnf.CFind(settings.SC_DICOM_SERVER, settings.SC_DICOM_PORT, instance_query,
-            ret, 'GDCM_PYTHON', settings.AET)
-
-    sorted_ret = sorted(ret, key = lambda x: int(str(x.GetDataElement(instance_number_tag).GetValue())))
-    response = [str(x.GetDataElement(instance_uid_tag).GetValue()) for x in sorted_ret]
+    response = [i["MainDicomTags"]["SOPInstanceUID"] for i in instances]
 
     json_response = json.dumps(response)
     
@@ -139,7 +98,6 @@ def calibrationDetails(dcm_obj):
         details = calibration_type or calibration_descr
     
     return details
-
 
 # Proxy to WADO server that only allows jpeg or png
 def wado(request):

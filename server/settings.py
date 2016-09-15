@@ -55,6 +55,9 @@ SC_WADO_PROT = get_env_variable('WADO_PROT', 'http')
 
 AET = get_env_variable('DICOM_AET', 'DCM4CHEE')
 
+ORTHANC_USER = get_env_variable('ORTHANC_USER', 'orthanc')
+ORTHANC_PASSWORD = get_env_variable('ORTHANC_PASSWORD', 'orthanc')
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
