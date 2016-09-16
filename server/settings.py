@@ -57,6 +57,7 @@ AET = get_env_variable('DICOM_AET', 'DCM4CHEE')
 
 ORTHANC_USER = get_env_variable('ORTHANC_USER', 'orthanc')
 ORTHANC_PASSWORD = get_env_variable('ORTHANC_PASSWORD', 'orthanc')
+VERIFY_SSL = bool(get_env_variable('VERIFY_SSL', True))
 
 CACHES = {
     'default': {

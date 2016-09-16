@@ -40,7 +40,7 @@ def app_root(request):
 
 def get_orthanc(dicom_id):
     response=requests.post("%s/tools/lookup/" % ORTHANC_URL, data=dicom_id, 
-       auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD))
+       auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD), verify=settings.VERIFY_SSL)
     return response.json()[0]
 
 def study(request, study_iuid):
@@ -48,13 +48,13 @@ def study(request, study_iuid):
     study_locator = get_orthanc(study_iuid)
     
     study = requests.get("%s%s" % (ORTHANC_URL, study_locator['Path']), 
-        auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD)).json()
+        auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD), verify=settings.VERIFY_SSL).json()
 
     response["description"] = study['MainDicomTags'].get('StudyDescription', 'None')
    
     series_ids = study['Series']
     series = requests.get("%s%s/series" % (ORTHANC_URL, study_locator['Path']), 
-        auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD)).json()
+        auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD), verify=settings.VERIFY_SSL).json()
 
     response["series"] =  [{"description":s['MainDicomTags'].get('SeriesDescription','None'),
         "uid": s['MainDicomTags']['SeriesInstanceUID']} for s in series]
@@ -72,7 +72,7 @@ def series(request, series_iuid):
     series_locator = get_orthanc(series_iuid)
 
     instances = requests.get("%s%s/instances" % (ORTHANC_URL, series_locator['Path']),
-        auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD)).json()
+        auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD), verify=settings.VERIFY_SSL).json()
 
     response = [i["MainDicomTags"]["SOPInstanceUID"] for i in instances]
 
@@ -104,7 +104,7 @@ def calibrationDetails(dcm_obj):
 def wado(request):
     if request.GET.has_key('contentType') and (request.GET['contentType'] == 'image/jpeg' or request.GET['contentType'] == 'image/png'):
           r = requests.get(WADO_URL, params=request.GET,  
-          auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD) )
+          auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD), verify=settings.VERIFY_SSL)
         
           data = r.content
           return HttpResponse(data, content_type=request.GET['contentType'])
@@ -119,7 +119,8 @@ def instance(request, instance_uid):
                'requestType':'WADO',
                'transferSyntax':'1.2.840.10008.1.2.2'} # explicit big endian
     # explicit little endian is  '1.2.840.10008.1.2.1'
-    r = requests.get(WADO_URL, params=payload, auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD))
+    r = requests.get(WADO_URL, params=payload, auth=HTTPBasicAuth(settings.ORTHANC_USER, settings.ORTHANC_PASSWORD),
+        verify=settings.VERIFY_SSL)
     data = r.content
     file_like = cStringIO.StringIO(data)
     dcm_obj = dicom.read_file(file_like)
