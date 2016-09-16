@@ -18,4 +18,10 @@ fi
 # Write the config file that the JS client requires
 python /opt/app/scripts/write_config.py
 
-exec /usr/local/bin/uwsgi --die-on-term --http-socket 0.0.0.0:8000 -p 4 -b 32768 -T --master --max-requests 5000 --static-map /static=/opt/app/client --module wsgi:application
+
+
+if [ -n "$HTTPS_ON" ]; then
+    exec /usr/local/bin/uwsgi --die-on-term --https 0.0.0.0:8443,$SSL_CERT_PATH/certificate.crt,$SSL_CERT_PATH/private.key -p 2 -b 32768 -T --master --max-requests 5000 --static-map /static=/opt/app/client --module wsgi:application
+else
+    exec /usr/local/bin/uwsgi --die-on-term --http-socket :8000 -p 4 -b 32768 -T --master --max-requests 5000 --static-map /static=/opt/app/client --module wsgi:application
+fi
