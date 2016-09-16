@@ -36,3 +36,4 @@ ENV APP_NAME STUDYCENTRIC
 CMD ["/opt/app/scripts/http.sh"]
 
 EXPOSE 8000
+EXPOSE 8443
