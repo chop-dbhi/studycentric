@@ -32,6 +32,9 @@ WADO_URL = "%s://%s:%d/%s" % (settings.SC_WADO_PROT, settings.SC_WADO_SERVER, se
 
 ORTHANC_URL = "%s://%s:%d" % (settings.SC_WADO_PROT, settings.SC_WADO_SERVER, settings.SC_WADO_PORT)
 
+if not settings.VERIFY_SSL:
+    requests.packages.urllib3.disable_warnings()
+
 def app_root(request):
     document_template = get_template("index.html")
     document = document_template.render(Context({}))

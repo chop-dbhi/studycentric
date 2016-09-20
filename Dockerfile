@@ -1,5 +1,5 @@
 # StudyCentric
-FROM ubuntu:vivid
+FROM python:2.7
 
 MAINTAINER Jeff Miller "millerjm1@email.chop.edu"
 
@@ -18,10 +18,6 @@ RUN apt-get install -y\
     openssl\
     wget\
     zlib1g-dev
-
-RUN apt-get install -y python2.7
-RUN apt-get install -y python2.7-dev
-RUN apt-get install -y python-pip
 
 # Python dependencies
 RUN pip install "Django>=1.10,<1.11"
