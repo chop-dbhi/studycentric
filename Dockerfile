@@ -24,7 +24,7 @@ RUN apt-get install -y python2.7-dev
 RUN apt-get install -y python-pip
 
 # Python dependencies
-RUN pip install "Django==1.5"
+RUN pip install "Django>=1.10,<1.11"
 RUN pip install "requests"
 RUN pip install "pydicom"
 RUN pip install "uWSGI"
