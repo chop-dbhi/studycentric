@@ -44,54 +44,59 @@ define(["jquery","underscore","utils","config","libs/jquery-ui-min"], function($
     rac.css('left', '250px');
     rac.css('top', '20px');
     $("#header").append(rac);
-    var racDialog = $(racTmpl);
     var save_handler;
+	var racDialog;
     rac.click(function(evt){
-        evt.preventDefault();
-        racDialog.dialog('open');
-    });
-    var racText = rac.text();
-    var comment = racDialog.find('textarea');
-    racDialog.dialog({
-        autoOpen: false,
-        resizable: false,
-        title: 'Report a PHI Concern',
-        width: 400,
-        buttons: {
-            'Cancel': function() { 
-                racDialog.dialog('close');
-             },
-            'Report Concern': function() {
-                $.ajax({
-                    type: 'POST',
-                    url: rac.attr('href'),
-                    beforeSend: function(xhr, settings) {
-                        racDialog.dialog('close');
-                        var context = {
-                            study_link : location.href,
-                            image_link : $("#lightbox").attr("src")
-                        };
-                        var payload = phiReportTmpl(context);
-                        settings.data = $.param({
-                            document: payload, 
-                            comment: comment.val()
-                        });
-                    },
-                    success: function() {
-                        comment.val('');
-                        rac.addClass('success').text('Submitted. Thank You!');
-                        setTimeout(function() {
-                            rac.removeClass('success').text(racText);
-                        }, 3000);
-                    },
-                    error: function(xhr, code, error) {
-                        var failMessage = $(errorFallBackTmpl({study: Utils.queryString2Object(location.href).studyUID}));
-                        racDialog.dialog('open');
-                        comment.replaceWith(failMessage); 
-                    },
-                    timeout:7000
-                });
-            }
-        }
-    });
+       evt.preventDefault();
+       racDialog = $(racTmpl);
+       var racText = rac.text();
+       var comment = racDialog.find('textarea');
+       racDialog.dialog({
+           autoOpen: false,
+           resizable: false,
+           title: 'Report a PHI Concern',
+           width: 400,
+           buttons: {
+               'Cancel': function() { 
+                   racDialog.dialog('close');
+                },
+               'Report Concern': function() {
+                   $.ajax({
+                       type: 'POST',
+                       url: rac.attr('href'),
+                       beforeSend: function(xhr, settings) {
+                           racDialog.dialog('close');
+                           var context = {
+                               study_link : location.href,
+                               image_link : $("#lightbox").attr("src")
+                           };
+                           var payload = phiReportTmpl(context);
+                           settings.data = $.param({
+                               document: payload, 
+                               comment: comment.val()
+                           });
+                       },
+                       success: function() {
+                           comment.val('');
+                           rac.addClass('success').text('Submitted. Thank You!');
+                           setTimeout(function() {
+                               rac.removeClass('success').text(racText);
+                           }, 3000);
+                       },
+                       error: function(xhr, code, error) {
+                           var failMessage = $(errorFallBackTmpl({study: Utils.queryString2Object(location.href).studyUID}));
+                           racDialog.dialog({buttons: {
+                              'Cancel': function() { 
+                                racDialog.dialog('close');
+                           }}});
+                           racDialog.dialog('open');
+                           comment.replaceWith(failMessage); 
+                       },
+                       timeout:7000
+                   });
+               }
+           }
+       });
+       racDialog.dialog('open');
+   }
 });
