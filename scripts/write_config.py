@@ -12,6 +12,9 @@ def get_env_variable(var_name, default=None):
         return default
 
 config = {
+    "StudyCentricProt": get_env_variable("STUDYCENTRIC_PROT", "http"),
+    "StudyCentricHost": get_env_variable("STUDYCENTRIC_HOST", False),
+    "StudyCentricPort": get_env_variable("STUDYCENTRIC_PORT", 80),
     "StudyCentricPath":get_env_variable("STUDYCENTRIC_PATH", "../"),
     "WADOHost":get_env_variable("CLIENT_WADO_HOST") or get_env_variable('WADO_SERVER') or get_env_variable("DICOM_SERVER", "localhost"),
     "WADOPort":get_env_variable("CLIENT_WADO_PORT") or get_env_variable('WADO_PORT', 8080),
