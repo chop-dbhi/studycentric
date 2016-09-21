@@ -98,5 +98,5 @@ define(["jquery","underscore","utils","config","libs/jquery-ui-min"], function($
            }
        });
        racDialog.dialog('open');
-   }
+   });
 });
