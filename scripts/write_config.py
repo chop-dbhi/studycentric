@@ -26,7 +26,7 @@ config = {
     "JSONP": bool(int(get_env_variable("JSONP", True))),
     "HoverColor": get_env_variable("HOVER_COLOR","#FFAA56"),
     "HintColor": get_env_variable("HINT_COLOR", "#FFFFFF"),
-    "MeasurementColor": get_env_variable("MEAUREMENT_COLOR", "#00FF00"),
+    "MeasurementColor": get_env_variable("MEASUREMENT_COLOR", "#00FF00"),
     "png": bool(int(get_env_variable("PNG", False))),
     "EnableReportConcern": bool(int(get_env_variable("ENABLE_REPORT_CONCERN", False))),
     "ReportConcernUrl": get_env_variable("REPORT_CONCERN_URL", "../concerns/"),
