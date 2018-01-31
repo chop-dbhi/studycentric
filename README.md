@@ -105,7 +105,7 @@ The following environment variables will allow you to configure StudyCentric. Wh
     JSONP: Enable JSONP for ajax requests. Defaults to 1 for true.
     HOVER_COLOR: You can change the default color when you hover over measurements. Defaults to #FFAA56.
     HINT_COLOR: Change the default color of hint lines between measurement bars measurement text. Defaults to #FFFFFF.
-    MEAUREMENT_COLOR: Change the default color of measurements. Defaults to #00FF00.
+    MEASUREMENT_COLOR: Change the default color of measurements. Defaults to #00FF00.
     PNG: Request lossless pngs from your WADO server instead of JPEGs. Defaults to false.
     
 The following variables are available in the event that you need to force your client to make WADO requests (which is how it obtains the actual images it displays) to a different PACS then specified above. This would only happen in a situation where the network you are serving StudyCentric to does not have direct access to your PACS and it needs to go through some sort of proxy. See the [Your PACS](#your-pacs) section for more details. If your client can talk directly to your PACS you can ignore these variables completely.
